@@ -1,43 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
 <head>
-        <meta charset="utf-8" />
-        <title>Part 1 - How to set up a development environment for data analysis in python</title>
-        <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/main.css" />
-        <link href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Data Science for collective intelligence Atom Feed" />
+    <title>Part 1 - How to set up a development environment for data analysis in python - Data Science for collective intelligence</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!--[if IE]>
-            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+
+
+<link rel="canonical" href="http://fredhusser.github.io/development-environment.html">
+
+        <meta name="author" content="Frederic Husser" />
+        <meta name="keywords" content="Vagrant,Docker,Python" />
+        <meta name="description" content="Set-up of a virtual development environment" />
+
+        <meta property="og:site_name" content="Data Science for collective intelligence" />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Part 1 - How to set up a development environment for data analysis in python"/>
+        <meta property="og:url" content="http://fredhusser.github.io/development-environment.html"/>
+        <meta property="og:description" content="Set-up of a virtual development environment"/>
+        <meta property="article:published_time" content="2015-12-10" />
+            <meta property="article:section" content="Python" />
+            <meta property="article:tag" content="Vagrant" />
+            <meta property="article:tag" content="Docker" />
+            <meta property="article:tag" content="Python" />
+            <meta property="article:author" content="Frederic Husser" />
+
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/bootstrap.min.css" type="text/css"/>
+    <link href="http://fredhusser.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://fredhusser.github.io/theme/css/pygments/native.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/style.css" type="text/css"/>
+
+        <link href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Data Science for collective intelligence ATOM Feed"/>
+
+
+
+        <link href="http://fredhusser.github.io/feeds/python.atom.xml" type="application/atom+xml" rel="alternate"
+              title="Data Science for collective intelligence Python ATOM Feed"/>
+
 </head>
+<body>
 
-<body id="index" class="home">
-        <header id="banner" class="body">
-                <h1><a href="http://fredhusser.github.io/">Data Science for collective intelligence </a></h1>
-                <nav><ul>
-                    <li class="active"><a href="http://fredhusser.github.io/category/python.html">Python</a></li>
-                </ul></nav>
-        </header><!-- /#banner -->
-<section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="http://fredhusser.github.io/development-environment.html" rel="bookmark"
-           title="Permalink to Part 1 - How to set up a development environment for data analysis in python">Part 1 - How to set up a development environment for data analysis in python</a></h1>
-    </header>
-
-    <div class="entry-content">
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://fredhusser.github.io/" class="navbar-brand">
+Data Science for collective intelligence            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                        <li class="active">
+                            <a href="http://fredhusser.github.io/category/python.html">Python</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="http://fredhusser.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://fredhusser.github.io/development-environment.html"
+                       rel="bookmark"
+                       title="Permalink to Part 1 - How to set up a development environment for data analysis in python">
+                        Part 1 - How to set up a development environment for data analysis in python
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
 <footer class="post-info">
-        <abbr class="published" title="2015-12-10T12:00:00+01:00">
-                Published: jeu. 10 décembre 2015
-        </abbr>
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-12-10T12:00:00+01:00"> jeu. 10 décembre 2015</time>
+    </span>
 
-        <address class="vcard author">
-                By                         <a class="url fn" href="http://fredhusser.github.io/author/frederic-husser.html">Frederic Husser</a>
-        </address>
-<p>In <a href="http://fredhusser.github.io/category/python.html">Python</a>.</p>
-<p>tags: <a href="http://fredhusser.github.io/tag/vagrant.html">Vagrant</a> <a href="http://fredhusser.github.io/tag/docker.html">Docker</a> <a href="http://fredhusser.github.io/tag/python.html">Python</a> </p>
-</footer><!-- /.post-info -->      <p>In this first tutorial, we are making sure that all the tools are set up for doing some data analysis in Python. Some developers might be working on Linux, Mac or sometimes on Windows. Programming with Python on Windows is a real pain, but a debate on the OS is out of the scope of this blog.</p>
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://fredhusser.github.io/tag/vagrant.html">Vagrant</a>
+        /
+	<a href="http://fredhusser.github.io/tag/docker.html">Docker</a>
+        /
+	<a href="http://fredhusser.github.io/tag/python.html">Python</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>In this first tutorial, we are making sure that all the tools are set up for doing some data analysis in Python. Some developers might be working on Linux, Mac or sometimes on Windows. Programming with Python on Windows is a real pain, but a debate on the OS is out of the scope of this blog.</p>
 <p>Instead, we will focus on making the environment totally agnostic on your choice and habits. We will use Vagrant for creating and configuring a linux Ubuntu virtual machine. From the Vagrant configuration file (the vagrantfile), we make sure that the virtual machine is provisioned with all dependencies we will need for developing our machine learning and web applications.</p>
 <p>Before starting make sure that you do have this three softwares installed on your machine:
 -   VirtualBox
@@ -149,38 +221,78 @@ config.vm.provision :docker_compose, yml: &quot;/vagrant/docker-compose.yml&quot
 CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                      NAMES
 0c7cc8c4d3cd        mongo:3.0.2         <span class="s2">&quot;/entrypoint.sh mongo&quot;</span>   <span class="m">10</span> days ago         Up <span class="m">5</span> hours          0.0.0.0:27017-&gt;27017/tcp   vagrant_mongo_1
 </pre></div>
-    </div><!-- /.entry-content -->
+            </div>
+            <!-- /.entry-content -->
+        </article>
+    </section>
 
-  </article>
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="#"><i class="fa fa-you-can-add-links-in-your-config-file-square fa-lg"></i> You can add links in your config file</a></li>
+                <li class="list-group-item"><a href="#"><i class="fa fa-another-social-link-square fa-lg"></i> Another social link</a></li>
+              </ul>
+            </li>
+
+
+
+
+
+    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
+      <ul class="list-group" id="links">
+        <li class="list-group-item">
+            <a href="http://getpelican.com/" target="_blank">
+                Pelican
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://python.org/" target="_blank">
+                Python.org
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="http://jinja.pocoo.org/" target="_blank">
+                Jinja2
+            </a>
+        </li>
+        <li class="list-group-item">
+            <a href="#" target="_blank">
+                You can modify those links in your config file
+            </a>
+        </li>
+      </ul>
+    </li>
+    </ul>
 </section>
-        <section id="extras" class="body">
-                <div class="blogroll">
-                        <h2>blogroll</h2>
-                        <ul>
-                            <li><a href="http://getpelican.com/">Pelican</a></li>
-                            <li><a href="http://python.org/">Python.org</a></li>
-                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
-                            <li><a href="#">You can modify those links in your config file</a></li>
-                        </ul>
-                </div><!-- /.blogroll -->
-                <div class="social">
-                        <h2>social</h2>
-                        <ul>
-                            <li><a href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">atom feed</a></li>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2015 Frederic Husser
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://fredhusser.github.io/theme/js/jquery.min.js"></script>
 
-                            <li><a href="#">You can add links in your config file</a></li>
-                            <li><a href="#">Another social link</a></li>
-                        </ul>
-                </div><!-- /.social -->
-        </section><!-- /#extras -->
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://fredhusser.github.io/theme/js/bootstrap.min.js"></script>
 
-        <footer id="contentinfo" class="body">
-                <address id="about" class="vcard body">
-                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
-                </address><!-- /#about -->
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://fredhusser.github.io/theme/js/respond.min.js"></script>
 
-                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
-        </footer><!-- /#contentinfo -->
 
 </body>
 </html>
