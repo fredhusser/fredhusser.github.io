@@ -5,71 +5,71 @@
 -   VirtualBox
 -   Vagrant
 -   Git&lt;/p&gt;
-&lt;h2&gt;Configuring a Linux Ubuntu machine&lt;/h2&gt;
+&lt;h2 id="configuring-a-linux-ubuntu-machine"&gt;Configuring a Linux Ubuntu machine&lt;/h2&gt;
 &lt;p&gt;Create a directory in which you will start the project. Of course the repository with all the code is available on GitHub, so that you can get started faster by cloning it.&lt;/p&gt;
 &lt;p&gt;In order to stress on the most important parts of our setup, we will go through the configuration ste-by-step.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;mkdir collective-intelligence
-&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd &lt;/span&gt;collective-intelligence
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;mkdir collective-intelligence&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd &lt;/span&gt;collective-intelligence&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;We will create a Vagrant configuration file Vagrantfile that will contain all information necessary to build and run the virtual machine. We setup the name of the VM, the network settings and port forwarding. We also add a synchronized folder so that all changes in the file system of the host machine are taken into account in the file system of the guest. &lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;VAGRANTFILE_API_VERSION = &amp;quot;2&amp;quot;
-Vagrant.configure(2) do |config|
-    config.vm.box = &amp;quot;ubuntu/trusty64&amp;quot;
-    config.vm.hostname = &amp;quot;vagrant-docker-anaconda&amp;quot;
-    config.vm.network &amp;quot;private_network&amp;quot;, ip: &amp;quot;192.168.50.100&amp;quot;
-    config.vm.network &amp;quot;forwarded_port&amp;quot;, guest: 80, host: 8080
-    config.vm.provider :virtualbox do |vb|
-        vb.customize [&amp;quot;modifyvm&amp;quot;, :id, &amp;quot;--memory&amp;quot;, &amp;quot;1024&amp;quot;, &amp;quot;--cpus&amp;quot;, &amp;quot;2&amp;quot;]
-    end
-
-    config.vm.synced_folder &amp;quot;.&amp;quot;, &amp;quot;/vagrant&amp;quot;, :type =&amp;gt; &amp;quot;nfs&amp;quot;
-    end
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;VAGRANTFILE_API_VERSION = &amp;quot;2&amp;quot;&lt;/span&gt;
+&lt;span class="code-line"&gt;Vagrant.configure(2) do |config|&lt;/span&gt;
+&lt;span class="code-line"&gt;    config.vm.box = &amp;quot;ubuntu/trusty64&amp;quot;&lt;/span&gt;
+&lt;span class="code-line"&gt;    config.vm.hostname = &amp;quot;vagrant-docker-anaconda&amp;quot;&lt;/span&gt;
+&lt;span class="code-line"&gt;    config.vm.network &amp;quot;private_network&amp;quot;, ip: &amp;quot;192.168.50.100&amp;quot;&lt;/span&gt;
+&lt;span class="code-line"&gt;    config.vm.network &amp;quot;forwarded_port&amp;quot;, guest: 80, host: 8080&lt;/span&gt;
+&lt;span class="code-line"&gt;    config.vm.provider :virtualbox do |vb|&lt;/span&gt;
+&lt;span class="code-line"&gt;        vb.customize [&amp;quot;modifyvm&amp;quot;, :id, &amp;quot;--memory&amp;quot;, &amp;quot;1024&amp;quot;, &amp;quot;--cpus&amp;quot;, &amp;quot;2&amp;quot;]&lt;/span&gt;
+&lt;span class="code-line"&gt;    end&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;    config.vm.synced_folder &amp;quot;.&amp;quot;, &amp;quot;/vagrant&amp;quot;, :type =&amp;gt; &amp;quot;nfs&amp;quot;&lt;/span&gt;
+&lt;span class="code-line"&gt;    end&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Once the Vagrantfile is defined you are able to build and run the VM simply by typing:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant up
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant up&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Provisioning with the necessary software&lt;/h2&gt;
+&lt;h2 id="provisioning-with-the-necessary-software"&gt;Provisioning with the necessary software&lt;/h2&gt;
 &lt;p&gt;For starting developping applications for data analysis we need a Python distribution. For data analysis in Python, Anaconda offered by Continuum Analytics is very convenient, and contains all the necessary packages. First connect through ssh to your running VM in one command line.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant ssh
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant ssh&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Then we will install anaconda. From the bash terminal connected to your VM, you can install Anaconda&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo apt-get update
-
-&lt;span class="c"&gt;# Download from the Anaconda remote directory&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo wget http://09c8d0b2229f813c1b93-c95ac804525aac4b6dba79b00b39d1d3.r79.cf1.rackcdn.com/Anaconda-2.1.0-Linux-x86_64.sh
-
-&lt;span class="c"&gt;# Install the Anaconda distribution in batch mode&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo bash Anaconda-2.1.0-Linux-x86_64.sh -b
-
-&lt;span class="c"&gt;# Append the path of the Anaconda Python interpreter into your path&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/home/vagrant/anaconda/bin:&lt;/span&gt;&lt;span class="nv"&gt;$PATH&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
-
-&lt;span class="c"&gt;# Update the package manager and install pymongo as we will use it&lt;/span&gt;
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo conda update -y conda
-&lt;span class="nv"&gt;$ &lt;/span&gt;sudo conda install -y pymongo
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo apt-get update&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="c"&gt;# Download from the Anaconda remote directory&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo wget http://09c8d0b2229f813c1b93-c95ac804525aac4b6dba79b00b39d1d3.r79.cf1.rackcdn.com/Anaconda-2.1.0-Linux-x86_64.sh&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="c"&gt;# Install the Anaconda distribution in batch mode&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo bash Anaconda-2.1.0-Linux-x86_64.sh -b&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="c"&gt;# Append the path of the Anaconda Python interpreter into your path&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/home/vagrant/anaconda/bin:&lt;/span&gt;&lt;span class="nv"&gt;$PATH&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="c"&gt;# Update the package manager and install pymongo as we will use it&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo conda update -y conda&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo conda install -y pymongo&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;Now you are all set and ready to work with Python. You can check your installation by starting the Python interpreter.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;vagrant@vagrant-docker-anaconda:~&lt;span class="nv"&gt;$ &lt;/span&gt;python
-Python 2.7.10 &lt;span class="p"&gt;|&lt;/span&gt;Anaconda 2.1.0 &lt;span class="o"&gt;(&lt;/span&gt;64-bit&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;default, Oct &lt;span class="m"&gt;19&lt;/span&gt; 2015, 18:04:42&lt;span class="o"&gt;)&lt;/span&gt;
-&lt;span class="o"&gt;[&lt;/span&gt;GCC 4.4.7 &lt;span class="m"&gt;20120313&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;Red Hat 4.4.7-1&lt;span class="o"&gt;)]&lt;/span&gt; on linux2
-Type &lt;span class="s2"&gt;&amp;quot;help&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;copyright&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;credits&amp;quot;&lt;/span&gt; or &lt;span class="s2"&gt;&amp;quot;license&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information.
-Anaconda is brought to you by Continuum Analytics.
-Please check out: http://continuum.io/thanks and https://anaconda.org
-&amp;gt;&amp;gt;&amp;gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;vagrant@vagrant-docker-anaconda:~&lt;span class="nv"&gt;$ &lt;/span&gt;python&lt;/span&gt;
+&lt;span class="code-line"&gt;Python 2.7.10 &lt;span class="p"&gt;|&lt;/span&gt;Anaconda 2.1.0 &lt;span class="o"&gt;(&lt;/span&gt;64-bit&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;default, Oct &lt;span class="m"&gt;19&lt;/span&gt; 2015, 18:04:42&lt;span class="o"&gt;)&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="o"&gt;[&lt;/span&gt;GCC 4.4.7 &lt;span class="m"&gt;20120313&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;Red Hat 4.4.7-1&lt;span class="o"&gt;)]&lt;/span&gt; on linux2&lt;/span&gt;
+&lt;span class="code-line"&gt;Type &lt;span class="s2"&gt;&amp;quot;help&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;copyright&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;credits&amp;quot;&lt;/span&gt; or &lt;span class="s2"&gt;&amp;quot;license&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information.&lt;/span&gt;
+&lt;span class="code-line"&gt;Anaconda is brought to you by Continuum Analytics.&lt;/span&gt;
+&lt;span class="code-line"&gt;Please check out: http://continuum.io/thanks and https://anaconda.org&lt;/span&gt;
+&lt;span class="code-line"&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;h2&gt;Using Docker for our database and web application&lt;/h2&gt;
+&lt;h2 id="using-docker-for-our-database-and-web-application"&gt;Using Docker for our database and web application&lt;/h2&gt;
 &lt;p&gt;Now we are almost ready to develop our machine learning application ! We also want to have a MongoDB and Postgres SQL instances running, as well as a web application (in Python of course!). We will use Docker and Docker-Compose for that and build a multi-container application. Basically we want to have:
 - A MongoDB server that will be accessible on the localhost of our VM, in which we will store our collected data and the outputs of the machine learning tasks;
 - A PostgresSQL server that will support our web application data;
@@ -77,46 +77,46 @@ Please check out: http://continuum.io/thanks and https://anaconda.org
 - An nginx service to forward requests either to the Flask app or the static files;
 - Some data-only containers that will back-up the data from the database services.&lt;/p&gt;
 &lt;p&gt;Check out this blog post from &lt;a href="https://realpython.com/blog/python/dockerizing-flask-with-compose-and-machine-from-localhost-to-the-cloud/"&gt;Real Python&lt;/a&gt; that brillantly explains the process of building a muti-container application with flask, and from which we got inspired to build the docker-compose.yml file:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-  &lt;span class="n"&gt;restart&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;always&lt;/span&gt;
-  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;
-  &lt;span class="n"&gt;volumes_from&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;data_mongo&lt;/span&gt;
-  &lt;span class="n"&gt;ports&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;27017:27017&amp;quot;&lt;/span&gt;
-  &lt;span class="n"&gt;expose&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;27017&amp;quot;&lt;/span&gt;
-
-&lt;span class="n"&gt;data_mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;
-  &lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
-    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/vagrant/data/mongo:/var/lib/mongo:rw&amp;quot;&lt;/span&gt;
-  &lt;span class="n"&gt;entrypoint&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/bin/true&amp;quot;&lt;/span&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;  &lt;span class="n"&gt;restart&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;always&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;  &lt;span class="n"&gt;volumes_from&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;data_mongo&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;  &lt;span class="n"&gt;ports&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;27017:27017&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;  &lt;span class="n"&gt;expose&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;27017&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;&lt;span class="n"&gt;data_mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;  &lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/vagrant/data/mongo:/var/lib/mongo:rw&amp;quot;&lt;/span&gt;&lt;/span&gt;
+&lt;span class="code-line"&gt;  &lt;span class="n"&gt;entrypoint&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/bin/true&amp;quot;&lt;/span&gt;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;In order to make Vagrant able to run the containers as soon it starts up, you have to provision Docker and Docker-Compose from the Vagrantfile, in which you must add the following:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;config.vm.provision :docker
-config.vm.provision :docker_compose, yml: &amp;quot;/vagrant/docker-compose.yml&amp;quot;, rebuild: true, run: &amp;quot;always&amp;quot;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;config.vm.provision :docker&lt;/span&gt;
+&lt;span class="code-line"&gt;config.vm.provision :docker_compose, yml: &amp;quot;/vagrant/docker-compose.yml&amp;quot;, rebuild: true, run: &amp;quot;always&amp;quot;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;By reloading the VM this will be taken into account and the docker client will try to build our MongoDB container. If you look directly into the repository you will notice that the other containers (nginx, Flask, PostgresSQL) are also defined. However it is out of the scope of this first set-up step to explain in details how to build them.&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant reload
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant reload&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
 &lt;p&gt;If the VM reloads successfully, it can take few minutes for Docker to set-up, you can check that the MongoDB container is effectively there. First reconnect by ssh to your VM and test your docker:&lt;/p&gt;
-&lt;div class="highlight"&gt;&lt;pre&gt;vagrant@vagrant-docker-anaconda:~&lt;span class="nv"&gt;$ &lt;/span&gt;docker ps
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                      NAMES
-0c7cc8c4d3cd        mongo:3.0.2         &lt;span class="s2"&gt;&amp;quot;/entrypoint.sh mongo&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;10&lt;/span&gt; days ago         Up &lt;span class="m"&gt;5&lt;/span&gt; hours          0.0.0.0:27017-&amp;gt;27017/tcp   vagrant_mongo_1
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;vagrant@vagrant-docker-anaconda:~&lt;span class="nv"&gt;$ &lt;/span&gt;docker ps&lt;/span&gt;
+&lt;span class="code-line"&gt;CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                      NAMES&lt;/span&gt;
+&lt;span class="code-line"&gt;0c7cc8c4d3cd        mongo:3.0.2         &lt;span class="s2"&gt;&amp;quot;/entrypoint.sh mongo&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;10&lt;/span&gt; days ago         Up &lt;span class="m"&gt;5&lt;/span&gt; hours          0.0.0.0:27017-&amp;gt;27017/tcp   vagrant_mongo_1&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;</summary><category term="Vagrant"></category><category term="Docker"></category><category term="Python"></category></entry><entry><title>Part 0 - Collective intelligence in Python: introduction</title><link href="http://fredhusser.github.io/introduction-collective-intelligence.html" rel="alternate"></link><updated>2015-12-10T12:00:00+01:00</updated><author><name>Frederic Husser</name></author><id>tag:fredhusser.github.io,2015-12-10:introduction-collective-intelligence.html</id><summary type="html">&lt;p&gt;This post starts a series covering a full text mining workflow on information, from the collection of text documents, their classification using machine learning techniques and the presentation in a light weight web application.&lt;/p&gt;
 &lt;p&gt;This workflow features for a large part the workflow well explained in details in the books &lt;em&gt;[Agile Data Science]&lt;/em&gt; by Russel Jurney.&lt;/p&gt;
 &lt;p&gt;This blog is also meant to be a recipe for data scientists and physicists who want to be able to present and communicate about their work, so that their algorithms and analysis do not sleep forever deep in their GitHub account.&lt;/p&gt;
-&lt;h2&gt;So what are the goals we want to pursue?&lt;/h2&gt;
+&lt;h2 id="so-what-are-the-goals-we-want-to-pursue"&gt;So what are the goals we want to pursue?&lt;/h2&gt;
 &lt;p&gt;We want to build an application that collects a great number of blog posts, news articles or opinions in the web, use a semantic analysis to classify them based on content and allows users to browse faster in the corpus through a simple web application.&lt;/p&gt;
 &lt;p&gt;From the developer standpoint, we want to be able to make web developers and data scientists working together in an agile workflow. The lean data science is based upon the principle that data collection, analysis and visualization should be considered as a loop that must be completed at the fastest possible speed. At each iteration, developers and data scientists can work collaboratively to improve the solution at any level as they can see the full picture. So letb s get to work.&lt;/p&gt;
-&lt;h2&gt;Steps&lt;/h2&gt;
+&lt;h2 id="steps"&gt;Steps&lt;/h2&gt;
 &lt;p&gt;The first series of posts covers the first iteration.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;Environment&lt;/strong&gt;.&lt;/li&gt;
