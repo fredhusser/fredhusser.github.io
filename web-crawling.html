@@ -1,116 +1,57 @@
-<!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Part 2 - Crawling a news website in Python with Scrapy and MongoDB - Data Science for collective intelligence</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Data Science for collective intelligence, ">
+
+        <link rel="alternate"  href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" title="Data Science for collective intelligence Full Atom Feed"/>
+
+        <title>Part 2 - Crawling a news website in Python with Scrapy and MongoDB // Data Science for collective intelligence // </title>
 
 
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/pygments.css">
 
-<link rel="canonical" href="http://fredhusser.github.io/web-crawling.html">
-
-        <meta name="author" content="Frederic Husser" />
-        <meta name="keywords" content="Scrapy,MongoDB,Python" />
-        <meta name="description" content="In this second part of our series, we will crawl the news website www.lemonde.fr with Scrapy for collecting a set of news articles, and store them in a MongoDB store. Scrapy is very easy to fire up and has a steep learning curve. We make profit of this to be able to start quickly our text mining activities on real data sets. With real data we mean data from a real use case. There are well known datasets such as the 20newsgroup reuters dataset of labelled documents. In our case, we want to learn to be confronted to unlabelled datasets, in any language." />
-
-        <meta property="og:site_name" content="Data Science for collective intelligence" />
-        <meta property="og:type" content="article"/>
-        <meta property="og:title" content="Part 2 - Crawling a news website in Python with Scrapy and MongoDB"/>
-        <meta property="og:url" content="http://fredhusser.github.io/web-crawling.html"/>
-        <meta property="og:description" content="In this second part of our series, we will crawl the news website www.lemonde.fr with Scrapy for collecting a set of news articles, and store them in a MongoDB store. Scrapy is very easy to fire up and has a steep learning curve. We make profit of this to be able to start quickly our text mining activities on real data sets. With real data we mean data from a real use case. There are well known datasets such as the 20newsgroup reuters dataset of labelled documents. In our case, we want to learn to be confronted to unlabelled datasets, in any language."/>
-        <meta property="article:published_time" content="2015-12-11" />
-            <meta property="article:section" content="Python" />
-            <meta property="article:tag" content="Scrapy" />
-            <meta property="article:tag" content="MongoDB" />
-            <meta property="article:tag" content="Python" />
-            <meta property="article:author" content="Frederic Husser" />
-
-
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/bootstrap.min.css" type="text/css"/>
-    <link href="http://fredhusser.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="http://fredhusser.github.io/theme/css/pygments/native.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/style.css" type="text/css"/>
-        <link href="http://fredhusser.github.io/static/css/bootstrap.spacelab.min.css" rel="stylesheet">
-
-        <link href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Data Science for collective intelligence ATOM Feed"/>
-
-
-
-        <link href="http://fredhusser.github.io/feeds/python.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Data Science for collective intelligence Python ATOM Feed"/>
-
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
+
 <body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="http://fredhusser.github.io/" class="navbar-brand">
-Data Science for collective intelligence            </a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-                        <li class="active">
-                            <a href="http://fredhusser.github.io/category/python.html">Python</a>
-                        </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="http://fredhusser.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
+<div class="pure-g-r" id="layout">
+    <div class="sidebar sidebar-article pure-u">
+        <header class="header-article">
+            <hgroup>
+                <a href="http://fredhusser.github.io/author/frederic-husser.html" title="See posts by Frederic Husser">
+                </a>
+                <h2 class="article-info">Frederic Husser</h2>
+                <small class="about-author"></small>
+                <h5>Published</h5>
+                <p>ven. 11 décembre 2015</p>
+                <a href="/">&larr;Home</a>
+            </hgroup>
+        </header>
     </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-sm-9">
-    <section id="content">
-        <article>
-            <header class="page-header">
-                <h1>
-                    <a href="http://fredhusser.github.io/web-crawling.html"
-                       rel="bookmark"
-                       title="Permalink to Part 2 - Crawling a news website in Python with Scrapy and MongoDB">
-                        Part 2 - Crawling a news website in Python with Scrapy and MongoDB
-                    </a>
-                </h1>
-            </header>
-            <div class="entry-content">
-                <div class="panel">
-                    <div class="panel-body">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-12-11T12:00:00+01:00"> ven. 11 décembre 2015</time>
-    </span>
-
-
-
-
-
-<span class="label label-default">Tags</span>
-	<a href="http://fredhusser.github.io/tag/scrapy.html">Scrapy</a>
-        /
-	<a href="http://fredhusser.github.io/tag/mongodb.html">MongoDB</a>
-        /
-	<a href="http://fredhusser.github.io/tag/python.html">Python</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                </div>
-                <h2 id="quick-start-with-scrapy">Quick start with Scrapy</h2>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Part 2 - Crawling a news website in Python with Scrapy and MongoDB</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="http://fredhusser.github.io/tag/scrapy.html">Scrapy</a>
+                                <a class="post-category" href="http://fredhusser.github.io/tag/mongodb.html">MongoDB</a>
+                                <a class="post-category" href="http://fredhusser.github.io/tag/python.html">Python</a>
+                        </p>
+                </header>
+            </section>
+            <h2 id="quick-start-with-scrapy">Quick start with Scrapy</h2>
 <p>We will work on our virtual machine as defined in the previous part. The code that we will go through is available in the GitHub repository under the worker_scrapy subdirectory. If the VM is not running just type <code>vagrant up</code> and then <code>vagrant ssh</code> while being at the root of the project.</p>
 <p>Since Scrapy will require some additional packages it is convenient to use a virtual python environment dedicated to our Scrapy worker. For doing this we will simply use the Conda package manager, and type in the terminal:</p>
 <div class="highlight"><pre><span class="code-line"><span class="nv">$ </span><span class="nb">cd</span> /vagrant/worker_scrapy</span>
@@ -244,112 +185,39 @@ Data Science for collective intelligence            </a>
 <p>Once you are all set, from the root of the subdirectory, where the <code>scrapy.conf</code> file is located you can start the crawler from the command line. The syntax is as follows:</p>
 <div class="highlight"><pre><span class="code-line">scrapy crawl lemonde</span>
 </pre></div>
-            </div>
-            <!-- /.entry-content -->
-<section class="well" id="related-posts">
-    <h4>Related Posts:</h4>
-    <ul>
-        <li><a href="http://fredhusser.github.io/development-environment.html">Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda</a></li>
-    </ul>
-</section>
-        </article>
-    </section>
-
-        </div>
-        <div class="col-sm-3" id="sidebar">
-            <aside>
-
-<section class="well well-sm">
-    <ul class="list-group list-group-flush">
-            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
-              <ul class="list-group" id="social">
-                <li class="list-group-item"><a href="https://github.com/fredhusser"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
-              </ul>
-            </li>
-
-
-
-            <li class="list-group-item"><a href="http://fredhusser.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
-                <ul class="list-group " id="tags">
-                    <li class="list-group-item tag-1">
-                        <a href="http://fredhusser.github.io/tag/python.html">
-                            Python
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/agile-data-science.html">
-                            Agile Data Science
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/machine-learning.html">
-                            Machine Learning
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/mongodb.html">
-                            MongoDB
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/vagrant.html">
-                            Vagrant
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/scrapy.html">
-                            Scrapy
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/dev-environment.html">
-                            dev environment
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/docker.html">
-                            Docker
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-
-    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
-      <ul class="list-group" id="links">
-        <li class="list-group-item">
-            <a href="/" target="_blank">
-                Home
-            </a>
-        </li>
-      </ul>
-    </li>
-    </ul>
-</section>
-            </aside>
-        </div>
+            <div class="hr"></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Data Science for collective intelligence &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
     </div>
 </div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2015 Frederic Husser
-            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
-</footer>
-<script src="http://fredhusser.github.io/theme/js/jquery.min.js"></script>
+    <script>
+        var $top = $('.go-top');
 
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="http://fredhusser.github.io/theme/js/bootstrap.min.js"></script>
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
 
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="http://fredhusser.github.io/theme/js/respond.min.js"></script>
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
 
-
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
 </body>
 </html>

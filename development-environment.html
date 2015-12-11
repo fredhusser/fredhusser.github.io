@@ -1,116 +1,57 @@
-<!DOCTYPE html>
-<html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
+<!doctype html>
+<html lang="en">
 <head>
-    <title>Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda - Data Science for collective intelligence</title>
-    <!-- Using the latest rendering mode for IE -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Data Science for collective intelligence, ">
+
+        <link rel="alternate"  href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" title="Data Science for collective intelligence Full Atom Feed"/>
+
+        <title>Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda // Data Science for collective intelligence // </title>
 
 
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/pure.css">
+    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/pygments.css">
 
-<link rel="canonical" href="http://fredhusser.github.io/development-environment.html">
-
-        <meta name="author" content="Frederic Husser" />
-        <meta name="keywords" content="Vagrant,Docker,Python" />
-        <meta name="description" content="We will fire up a virtual development environment using state-of-art tools for making data analysis in Python. We will use both Vagrant and Docker for firing up a Linux virtual machine with all tools ready for Python data analysis. Preparing the Python environment is sometimes hard for scientists without a strong background in software development, this is wy having a reproducible and turnkey workflow is so important. Additionally when it comes to collaboration, the installation of the Python interpreters as well as all the needed packages can become a real pain. With virtual environment, you are making sure that everybody is working under the same settings." />
-
-        <meta property="og:site_name" content="Data Science for collective intelligence" />
-        <meta property="og:type" content="article"/>
-        <meta property="og:title" content="Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda"/>
-        <meta property="og:url" content="http://fredhusser.github.io/development-environment.html"/>
-        <meta property="og:description" content="We will fire up a virtual development environment using state-of-art tools for making data analysis in Python. We will use both Vagrant and Docker for firing up a Linux virtual machine with all tools ready for Python data analysis. Preparing the Python environment is sometimes hard for scientists without a strong background in software development, this is wy having a reproducible and turnkey workflow is so important. Additionally when it comes to collaboration, the installation of the Python interpreters as well as all the needed packages can become a real pain. With virtual environment, you are making sure that everybody is working under the same settings."/>
-        <meta property="article:published_time" content="2015-12-10" />
-            <meta property="article:section" content="Python" />
-            <meta property="article:tag" content="Vagrant" />
-            <meta property="article:tag" content="Docker" />
-            <meta property="article:tag" content="Python" />
-            <meta property="article:author" content="Frederic Husser" />
-
-
-    <!-- Bootstrap -->
-        <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/bootstrap.min.css" type="text/css"/>
-    <link href="http://fredhusser.github.io/theme/css/font-awesome.min.css" rel="stylesheet">
-
-    <link href="http://fredhusser.github.io/theme/css/pygments/native.css" rel="stylesheet">
-    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/style.css" type="text/css"/>
-        <link href="http://fredhusser.github.io/static/css/bootstrap.spacelab.min.css" rel="stylesheet">
-
-        <link href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Data Science for collective intelligence ATOM Feed"/>
-
-
-
-        <link href="http://fredhusser.github.io/feeds/python.atom.xml" type="application/atom+xml" rel="alternate"
-              title="Data Science for collective intelligence Python ATOM Feed"/>
-
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
 </head>
+
 <body>
-
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
-	<div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="http://fredhusser.github.io/" class="navbar-brand">
-Data Science for collective intelligence            </a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-                        <li class="active">
-                            <a href="http://fredhusser.github.io/category/python.html">Python</a>
-                        </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="http://fredhusser.github.io/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
-            </ul>
-        </div>
-        <!-- /.navbar-collapse -->
+<div class="pure-g-r" id="layout">
+    <div class="sidebar sidebar-article pure-u">
+        <header class="header-article">
+            <hgroup>
+                <a href="http://fredhusser.github.io/author/frederic-husser.html" title="See posts by Frederic Husser">
+                </a>
+                <h2 class="article-info">Frederic Husser</h2>
+                <small class="about-author"></small>
+                <h5>Published</h5>
+                <p>jeu. 10 décembre 2015</p>
+                <a href="/">&larr;Home</a>
+            </hgroup>
+        </header>
     </div>
-</div> <!-- /.navbar -->
-<!-- Banner -->
-<!-- End Banner -->
-<div class="container">
-    <div class="row">
-        <div class="col-sm-9">
-    <section id="content">
-        <article>
-            <header class="page-header">
-                <h1>
-                    <a href="http://fredhusser.github.io/development-environment.html"
-                       rel="bookmark"
-                       title="Permalink to Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda">
-                        Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda
-                    </a>
-                </h1>
-            </header>
-            <div class="entry-content">
-                <div class="panel">
-                    <div class="panel-body">
-<footer class="post-info">
-    <span class="label label-default">Date</span>
-    <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-12-10T12:00:00+01:00"> jeu. 10 décembre 2015</time>
-    </span>
-
-
-
-
-
-<span class="label label-default">Tags</span>
-	<a href="http://fredhusser.github.io/tag/vagrant.html">Vagrant</a>
-        /
-	<a href="http://fredhusser.github.io/tag/docker.html">Docker</a>
-        /
-	<a href="http://fredhusser.github.io/tag/python.html">Python</a>
-    
-</footer><!-- /.post-info -->                    </div>
-                </div>
-                <p>In this tutorial, we build an environment with Vagrant, Docker and Anaconda for doing firstly data analysis in Python. It should be totally agnostic on the choice of your operating system, be it Linux, Mac or Windows. Vagrant is used for configuring the linux Ubuntu virtual machine. The vagrant file located at the root of the project directory contains all the settings for that VM so that it can boot with all dependencies provisioned </p>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="http://fredhusser.github.io/tag/vagrant.html">Vagrant</a>
+                                <a class="post-category" href="http://fredhusser.github.io/tag/docker.html">Docker</a>
+                                <a class="post-category" href="http://fredhusser.github.io/tag/python.html">Python</a>
+                        </p>
+                </header>
+            </section>
+            <p>In this tutorial, we build an environment with Vagrant, Docker and Anaconda for doing firstly data analysis in Python. It should be totally agnostic on the choice of your operating system, be it Linux, Mac or Windows. Vagrant is used for configuring the linux Ubuntu virtual machine. The vagrant file located at the root of the project directory contains all the settings for that VM so that it can boot with all dependencies provisioned </p>
 <p>Before starting make sure that you do have this three softwares installed on your machine:</p>
 <ul>
 <li>VirtualBox</li>
@@ -225,112 +166,39 @@ Data Science for collective intelligence            </a>
 <span class="code-line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                      NAMES</span>
 <span class="code-line">0c7cc8c4d3cd        mongo:3.0.2         <span class="s2">&quot;/entrypoint.sh mongo&quot;</span>   <span class="m">10</span> days ago         Up <span class="m">5</span> hours          0.0.0.0:27017-&gt;27017/tcp   vagrant_mongo_1</span>
 </pre></div>
-            </div>
-            <!-- /.entry-content -->
-<section class="well" id="related-posts">
-    <h4>Related Posts:</h4>
-    <ul>
-        <li><a href="http://fredhusser.github.io/web-crawling.html">Part 2 - Crawling a news website in Python with Scrapy and MongoDB</a></li>
-    </ul>
-</section>
-        </article>
-    </section>
-
-        </div>
-        <div class="col-sm-3" id="sidebar">
-            <aside>
-
-<section class="well well-sm">
-    <ul class="list-group list-group-flush">
-            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
-              <ul class="list-group" id="social">
-                <li class="list-group-item"><a href="https://github.com/fredhusser"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
-              </ul>
-            </li>
-
-
-
-            <li class="list-group-item"><a href="http://fredhusser.github.io/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
-                <ul class="list-group " id="tags">
-                    <li class="list-group-item tag-1">
-                        <a href="http://fredhusser.github.io/tag/python.html">
-                            Python
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/agile-data-science.html">
-                            Agile Data Science
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/machine-learning.html">
-                            Machine Learning
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/mongodb.html">
-                            MongoDB
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/vagrant.html">
-                            Vagrant
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/scrapy.html">
-                            Scrapy
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/dev-environment.html">
-                            dev environment
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-5">
-                        <a href="http://fredhusser.github.io/tag/docker.html">
-                            Docker
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-
-    <li class="list-group-item"><h4><i class="fa fa-external-link-square fa-lg"></i><span class="icon-label">Links</span></h4>
-      <ul class="list-group" id="links">
-        <li class="list-group-item">
-            <a href="/" target="_blank">
-                Home
-            </a>
-        </li>
-      </ul>
-    </li>
-    </ul>
-</section>
-            </aside>
-        </div>
+            <div class="hr"></div>
+            <a href="#" class="go-top">Go Top</a>
+<footer class="footer">
+    <p>&copy; Data Science for collective intelligence &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
     </div>
 </div>
-<footer>
-   <div class="container">
-      <hr>
-      <div class="row">
-         <div class="col-xs-10">&copy; 2015 Frederic Husser
-            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
-            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
-            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>         </div>
-         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
-      </div>
-   </div>
-</footer>
-<script src="http://fredhusser.github.io/theme/js/jquery.min.js"></script>
+    <script>
+        var $top = $('.go-top');
 
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="http://fredhusser.github.io/theme/js/bootstrap.min.js"></script>
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
 
-<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
-<script src="http://fredhusser.github.io/theme/js/respond.min.js"></script>
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
 
-
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
 </body>
 </html>
