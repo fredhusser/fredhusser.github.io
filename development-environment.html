@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" prefix="og: http://ogp.me/ns# fb: https://www.facebook.com/2008/fbml">
 <head>
-    <title>Part 1 - How to set up a development environment for data analysis in python - Data Science for collective intelligence</title>
+    <title>Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda - Data Science for collective intelligence</title>
     <!-- Using the latest rendering mode for IE -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
@@ -13,13 +13,13 @@
 
         <meta name="author" content="Frederic Husser" />
         <meta name="keywords" content="Vagrant,Docker,Python" />
-        <meta name="description" content="Set-up of a virtual development environment" />
+        <meta name="description" content="We will fire up a virtual development environment using state-of-art tools for making data analysis in Python. We will use both Vagrant and Docker for firing up a Linux virtual machine with all tools ready for Python data analysis. Preparing the Python environment is sometimes hard for scientists without a strong background in software development, this is wy having a reproducible and turnkey workflow is so important. Additionally when it comes to collaboration, the installation of the Python interpreters as well as all the needed packages can become a real pain. With virtual environment, you are making sure that everybody is working under the same settings." />
 
         <meta property="og:site_name" content="Data Science for collective intelligence" />
         <meta property="og:type" content="article"/>
-        <meta property="og:title" content="Part 1 - How to set up a development environment for data analysis in python"/>
+        <meta property="og:title" content="Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda"/>
         <meta property="og:url" content="http://fredhusser.github.io/development-environment.html"/>
-        <meta property="og:description" content="Set-up of a virtual development environment"/>
+        <meta property="og:description" content="We will fire up a virtual development environment using state-of-art tools for making data analysis in Python. We will use both Vagrant and Docker for firing up a Linux virtual machine with all tools ready for Python data analysis. Preparing the Python environment is sometimes hard for scientists without a strong background in software development, this is wy having a reproducible and turnkey workflow is so important. Additionally when it comes to collaboration, the installation of the Python interpreters as well as all the needed packages can become a real pain. With virtual environment, you are making sure that everybody is working under the same settings."/>
         <meta property="article:published_time" content="2015-12-10" />
             <meta property="article:section" content="Python" />
             <meta property="article:tag" content="Vagrant" />
@@ -83,8 +83,8 @@ Data Science for collective intelligence            </a>
                 <h1>
                     <a href="http://fredhusser.github.io/development-environment.html"
                        rel="bookmark"
-                       title="Permalink to Part 1 - How to set up a development environment for data analysis in python">
-                        Part 1 - How to set up a development environment for data analysis in python
+                       title="Permalink to Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda">
+                        Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda
                     </a>
                 </h1>
             </header>
@@ -110,12 +110,13 @@ Data Science for collective intelligence            </a>
     
 </footer><!-- /.post-info -->                    </div>
                 </div>
-                <p>In this first tutorial, we are making sure that all the tools are set up for doing some data analysis in Python. Some developers might be working on Linux, Mac or sometimes on Windows. Programming with Python on Windows is a real pain, but a debate on the OS is out of the scope of this blog.</p>
-<p>Instead, we will focus on making the environment totally agnostic on your choice and habits. We will use Vagrant for creating and configuring a linux Ubuntu virtual machine. From the Vagrant configuration file (the vagrantfile), we make sure that the virtual machine is provisioned with all dependencies we will need for developing our machine learning and web applications.</p>
-<p>Before starting make sure that you do have this three softwares installed on your machine:
--   VirtualBox
--   Vagrant
--   Git</p>
+                <p>In this tutorial, we build an environment with Vagrant, Docker and Anaconda for doing firstly data analysis in Python. It should be totally agnostic on the choice of your operating system, be it Linux, Mac or Windows. Vagrant is used for configuring the linux Ubuntu virtual machine. The vagrant file located at the root of the project directory contains all the settings for that VM so that it can boot with all dependencies provisioned </p>
+<p>Before starting make sure that you do have this three softwares installed on your machine:</p>
+<ul>
+<li>VirtualBox</li>
+<li>Vagrant</li>
+<li>Git</li>
+</ul>
 <h2 id="configuring-a-linux-ubuntu-machine">Configuring a Linux Ubuntu machine</h2>
 <p>Create a directory in which you will start the project. Of course the repository with all the code is available on GitHub, so that you can get started faster by cloning it.</p>
 <p>In order to stress on the most important parts of our setup, we will go through the configuration ste-by-step.</p>
@@ -181,13 +182,15 @@ Data Science for collective intelligence            </a>
 
 
 <h2 id="using-docker-for-our-database-and-web-application">Using Docker for our database and web application</h2>
-<p>Now we are almost ready to develop our machine learning application ! We also want to have a MongoDB and Postgres SQL instances running, as well as a web application (in Python of course!). We will use Docker and Docker-Compose for that and build a multi-container application. Basically we want to have:
-- A MongoDB server that will be accessible on the localhost of our VM, in which we will store our collected data and the outputs of the machine learning tasks;
-- A PostgresSQL server that will support our web application data;
-- A Flask back-end for our application, which we will use for communicating our results to the outside world;
-- An nginx service to forward requests either to the Flask app or the static files;
-- Some data-only containers that will back-up the data from the database services.</p>
-<p>Check out this blog post from <a href="https://realpython.com/blog/python/dockerizing-flask-with-compose-and-machine-from-localhost-to-the-cloud/">Real Python</a> that brillantly explains the process of building a muti-container application with flask, and from which we got inspired to build the docker-compose.yml file:</p>
+<p>Now we are almost ready to develop our machine learning application ! We also want to have a MongoDB and Postgres SQL instances running, as well as a web application (in Python of course!). We will use Docker and Docker-Compose for that and build a multi-container application. Basically we want to have:</p>
+<ul>
+<li>A <strong>MongoDB</strong> server that will be accessible on the localhost of our VM, in which we will store our collected data and the outputs of the machine learning tasks;</li>
+<li>A <strong>PostgresSQL</strong> server that will support our web application data;</li>
+<li>A <strong>Flask</strong> back-end for our application, which we will use for communicating our results to the outside world;</li>
+<li>An <strong>nginx</strong> service to forward requests either to the Flask app or the static files;</li>
+<li>Some <strong>data-only containers</strong> that will back-up the data from the database services.</li>
+</ul>
+<p>Check out this blog post from <a href="https://realpython.com/blog/python/dockerizing-flask-with-compose-and-machine-from-localhost-to-the-cloud/">Real Python</a> which explains the process of building a muti-container application with flask, and from which we got inspired to build the docker-compose.yml file:</p>
 <div class="highlight"><pre><span class="code-line"><span class="n">mongo</span><span class="o">:</span></span>
 <span class="code-line">  <span class="n">restart</span><span class="o">:</span> <span class="n">always</span></span>
 <span class="code-line">  <span class="n">image</span><span class="o">:</span> <span class="n">mongo</span><span class="o">:</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">2</span></span>

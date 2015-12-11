@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Science for collective intelligence</title><link href="http://fredhusser.github.io/" rel="alternate"></link><link href="http://fredhusser.github.io/feeds/python.atom.xml" rel="self"></link><id>http://fredhusser.github.io/</id><updated>2015-12-10T12:00:00+01:00</updated><entry><title>Part 1 - How to set up a development environment for data analysis in python</title><link href="http://fredhusser.github.io/development-environment.html" rel="alternate"></link><updated>2015-12-10T12:00:00+01:00</updated><author><name>Frederic Husser</name></author><id>tag:fredhusser.github.io,2015-12-10:development-environment.html</id><summary type="html">&lt;p&gt;In this first tutorial, we are making sure that all the tools are set up for doing some data analysis in Python. Some developers might be working on Linux, Mac or sometimes on Windows. Programming with Python on Windows is a real pain, but a debate on the OS is out of the scope of this blog.&lt;/p&gt;
-&lt;p&gt;Instead, we will focus on making the environment totally agnostic on your choice and habits. We will use Vagrant for creating and configuring a linux Ubuntu virtual machine. From the Vagrant configuration file (the vagrantfile), we make sure that the virtual machine is provisioned with all dependencies we will need for developing our machine learning and web applications.&lt;/p&gt;
-&lt;p&gt;Before starting make sure that you do have this three softwares installed on your machine:
--   VirtualBox
--   Vagrant
--   Git&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Science for collective intelligence</title><link href="http://fredhusser.github.io/" rel="alternate"></link><link href="http://fredhusser.github.io/feeds/python.atom.xml" rel="self"></link><id>http://fredhusser.github.io/</id><updated>2015-12-10T12:00:00+01:00</updated><entry><title>Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda</title><link href="http://fredhusser.github.io/development-environment.html" rel="alternate"></link><updated>2015-12-10T12:00:00+01:00</updated><author><name>Frederic Husser</name></author><id>tag:fredhusser.github.io,2015-12-10:development-environment.html</id><summary type="html">&lt;p&gt;In this tutorial, we build an environment with Vagrant, Docker and Anaconda for doing firstly data analysis in Python. It should be totally agnostic on the choice of your operating system, be it Linux, Mac or Windows. Vagrant is used for configuring the linux Ubuntu virtual machine. The vagrant file located at the root of the project directory contains all the settings for that VM so that it can boot with all dependencies provisioned &lt;/p&gt;
+&lt;p&gt;Before starting make sure that you do have this three softwares installed on your machine:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;VirtualBox&lt;/li&gt;
+&lt;li&gt;Vagrant&lt;/li&gt;
+&lt;li&gt;Git&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id="configuring-a-linux-ubuntu-machine"&gt;Configuring a Linux Ubuntu machine&lt;/h2&gt;
 &lt;p&gt;Create a directory in which you will start the project. Of course the repository with all the code is available on GitHub, so that you can get started faster by cloning it.&lt;/p&gt;
 &lt;p&gt;In order to stress on the most important parts of our setup, we will go through the configuration ste-by-step.&lt;/p&gt;
@@ -70,13 +71,15 @@
 
 
 &lt;h2 id="using-docker-for-our-database-and-web-application"&gt;Using Docker for our database and web application&lt;/h2&gt;
-&lt;p&gt;Now we are almost ready to develop our machine learning application ! We also want to have a MongoDB and Postgres SQL instances running, as well as a web application (in Python of course!). We will use Docker and Docker-Compose for that and build a multi-container application. Basically we want to have:
-- A MongoDB server that will be accessible on the localhost of our VM, in which we will store our collected data and the outputs of the machine learning tasks;
-- A PostgresSQL server that will support our web application data;
-- A Flask back-end for our application, which we will use for communicating our results to the outside world;
-- An nginx service to forward requests either to the Flask app or the static files;
-- Some data-only containers that will back-up the data from the database services.&lt;/p&gt;
-&lt;p&gt;Check out this blog post from &lt;a href="https://realpython.com/blog/python/dockerizing-flask-with-compose-and-machine-from-localhost-to-the-cloud/"&gt;Real Python&lt;/a&gt; that brillantly explains the process of building a muti-container application with flask, and from which we got inspired to build the docker-compose.yml file:&lt;/p&gt;
+&lt;p&gt;Now we are almost ready to develop our machine learning application ! We also want to have a MongoDB and Postgres SQL instances running, as well as a web application (in Python of course!). We will use Docker and Docker-Compose for that and build a multi-container application. Basically we want to have:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;strong&gt;MongoDB&lt;/strong&gt; server that will be accessible on the localhost of our VM, in which we will store our collected data and the outputs of the machine learning tasks;&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;PostgresSQL&lt;/strong&gt; server that will support our web application data;&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;Flask&lt;/strong&gt; back-end for our application, which we will use for communicating our results to the outside world;&lt;/li&gt;
+&lt;li&gt;An &lt;strong&gt;nginx&lt;/strong&gt; service to forward requests either to the Flask app or the static files;&lt;/li&gt;
+&lt;li&gt;Some &lt;strong&gt;data-only containers&lt;/strong&gt; that will back-up the data from the database services.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Check out this blog post from &lt;a href="https://realpython.com/blog/python/dockerizing-flask-with-compose-and-machine-from-localhost-to-the-cloud/"&gt;Real Python&lt;/a&gt; which explains the process of building a muti-container application with flask, and from which we got inspired to build the docker-compose.yml file:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;&lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;/span&gt;
 &lt;span class="code-line"&gt;  &lt;span class="n"&gt;restart&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;always&lt;/span&gt;&lt;/span&gt;
 &lt;span class="code-line"&gt;  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;&lt;/span&gt;
@@ -110,31 +113,41 @@
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="code-line"&gt;vagrant@vagrant-docker-anaconda:~&lt;span class="nv"&gt;$ &lt;/span&gt;docker ps&lt;/span&gt;
 &lt;span class="code-line"&gt;CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                      NAMES&lt;/span&gt;
 &lt;span class="code-line"&gt;0c7cc8c4d3cd        mongo:3.0.2         &lt;span class="s2"&gt;&amp;quot;/entrypoint.sh mongo&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;10&lt;/span&gt; days ago         Up &lt;span class="m"&gt;5&lt;/span&gt; hours          0.0.0.0:27017-&amp;gt;27017/tcp   vagrant_mongo_1&lt;/span&gt;
-&lt;/pre&gt;&lt;/div&gt;</summary><category term="Vagrant"></category><category term="Docker"></category><category term="Python"></category></entry><entry><title>Part 0 - Collective intelligence in Python: introduction</title><link href="http://fredhusser.github.io/introduction-collective-intelligence.html" rel="alternate"></link><updated>2015-12-10T12:00:00+01:00</updated><author><name>Frederic Husser</name></author><id>tag:fredhusser.github.io,2015-12-10:introduction-collective-intelligence.html</id><summary type="html">&lt;p&gt;This post starts a series covering a full text mining workflow on information, from the collection of text documents, their classification using machine learning techniques and the presentation in a light weight web application.&lt;/p&gt;
-&lt;p&gt;This workflow features for a large part the workflow well explained in details in the books &lt;em&gt;[Agile Data Science]&lt;/em&gt; by Russel Jurney.&lt;/p&gt;
-&lt;p&gt;This blog is also meant to be a recipe for data scientists and physicists who want to be able to present and communicate about their work, so that their algorithms and analysis do not sleep forever deep in their GitHub account.&lt;/p&gt;
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Vagrant"></category><category term="Docker"></category><category term="Python"></category></entry><entry><title>Part 0 - Collective intelligence in Python: introduction</title><link href="http://fredhusser.github.io/introduction-collective-intelligence.html" rel="alternate"></link><updated>2015-12-10T12:00:00+01:00</updated><author><name>Frederic Husser</name></author><id>tag:fredhusser.github.io,2015-12-10:introduction-collective-intelligence.html</id><summary type="html">&lt;p&gt;This blog is also meant to be a recipe for data scientists and physicists who want to be able to present and communicate about their work, so that their algorithms and analysis do not sleep forever deep in their GitHub account.&lt;/p&gt;
 &lt;h2 id="so-what-are-the-goals-we-want-to-pursue"&gt;So what are the goals we want to pursue?&lt;/h2&gt;
 &lt;p&gt;We want to build an application that collects a great number of blog posts, news articles or opinions in the web, use a semantic analysis to classify them based on content and allows users to browse faster in the corpus through a simple web application.&lt;/p&gt;
-&lt;p&gt;From the developer standpoint, we want to be able to make web developers and data scientists working together in an agile workflow. The lean data science is based upon the principle that data collection, analysis and visualization should be considered as a loop that must be completed at the fastest possible speed. At each iteration, developers and data scientists can work collaboratively to improve the solution at any level as they can see the full picture. So letb s get to work.&lt;/p&gt;
-&lt;h2 id="steps"&gt;Steps&lt;/h2&gt;
-&lt;p&gt;The first series of posts covers the first iteration.&lt;/p&gt;
+&lt;p&gt;In this blog we intend to present some tools for doing data analysis with Python but also we want to propose a way to conduct data analysis projects. The goals are to reduce the frictions in the full process. Frictions stem usually from the difficulty to work together for people with different backgrounds and fields: developers, data scientists, users and consummers. &lt;/p&gt;
+&lt;p&gt;The lean data science is based upon the principle that data collection, analysis and visualization should be considered as a loop that must be completed at the fastest possible speed. At each iteration, developers and data scientists can work collaboratively to improve the solution at any level as they can see the full picture. So let's get to work.&lt;/p&gt;
+&lt;h2 id="mission-objectives-and-roadmap"&gt;Mission, objectives and roadmap&lt;/h2&gt;
+&lt;h3 id="mission"&gt;Mission&lt;/h3&gt;
+&lt;p&gt;Our mission is to build a intelligent news web application able to classify and cluster articles and opinions. It must offer to users a simple but complete browsing experience, so that they can reach the biggest amount of relevant content in the least amount of time. Documents relevance is assessed using:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;semantic analysis&lt;/strong&gt;, that is to say extract features from the textual content, &lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;collaborative filtering&lt;/strong&gt; that is to say extract features on documents based on how users interact with them (likes, shares, comments).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="objectives"&gt;Objectives&lt;/h3&gt;
+&lt;p&gt;In order to realize this mission we can set up few objectives and constraints. First and foremost, we want to be &lt;strong&gt;open source&lt;/strong&gt; and &lt;strong&gt;transparent&lt;/strong&gt;. When using machine learning algorithms with the aim of recommending content to users it is immensely necessary to be open to critics so that it acknowledged by users to be fair and not pursuing self-interests. &lt;/p&gt;
+&lt;p&gt;Secondly, we do not seek the ultimate model and algorithm that will unequivocally resolve the challenge. Instead, algorithms must be combined, confronted and strongly challenged. There is no debate on whether model-based recommendations are better that collaborative filtering when it comes to recommending content. Instead, it must be recognized that both have strengths and weeknesses and therefore the question is how to make them operate together.&lt;/p&gt;
+&lt;p&gt;Finally, we want to offer to users the capability to browse quickly in the documents although the corpus is meant to be important. The classification and clustering algorithms must integrate this objective so that documents indexing is perfectly matching the requirements of a smart data visualization.&lt;/p&gt;
+&lt;h3 id="roadmap"&gt;Roadmap&lt;/h3&gt;
+&lt;p&gt;In the first iteration we will tackle the issue of semantic analysis for classifying documents based on their content. In order to achieve this goal we will operate in an agile manner so that we complete the following steps the fastest possible.&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Environment&lt;/strong&gt;.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;We will set up a reproducible development environment, with all the basic tools and frameworks we are going to need. For this we will be using Vagrant for taking care of our virtual machine on which to run Python scripts and Docker containers.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Data Collection&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Then some input data will be scraped from the web in order to have a collection of articles on which to perform some analysis. We will use Scrapy a web scraper in made in Python that will help us to crawl articles from &lt;a href="http://www.lemonde.fr"&gt;&lt;em&gt;www.lemonde.fr&lt;/em&gt;&lt;/a&gt;.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Data analytics and text mining&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Here is the hard work! Standing on the shoulder of giants like Numpy, NLTK and Scikit-Learn, we will build a document classification algorithm based on semantic analysis and self-organizing maps. We will rely a lot on the existing algorithms for natural language processing (NLP) such as in Scikit-Learn and NLTK, and we will eventually build our own self-organizing map classifier in Python.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Data visualization and browsing&lt;/strong&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Building a light weight web application with Flask and pymongo, we will make possible to data scientists to communicate on their results, with a step-by-step workflow.&lt;/p&gt;
-&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Environment set-up&lt;/strong&gt;
+We will set up a reproducible development environment, with all the basic tools and frameworks we are going to need. For this we will be using Vagrant for taking care of our virtual machine on which to run Python scripts and Docker containers.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Data Collection&lt;/strong&gt;
+Then some input data will be scraped from the web in order to have a collection of articles on which to perform some analysis. We will use Scrapy, a web scraper in made in Python, to help us crawling articles from &lt;a href="http://www.lemonde.fr"&gt;&lt;em&gt;www.lemonde.fr&lt;/em&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Data analytics and text mining&lt;/strong&gt;
+Here is the hard work! Standing on the shoulder of giants like Numpy, NLTK and Scikit-Learn, we will build a document classification algorithm based on semantic analysis and self-organizing maps. We will rely a lot on the existing algorithms for natural language processing (NLP) such as in Scikit-Learn and NLTK, and we will eventually build our own self-organizing map classifier in Python.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Data visualization and browsing&lt;/strong&gt;
+Building a light weight web application with Flask and pymongo, we will make possible to data scientists to communicate on their results, with a step-by-step workflow.&lt;/p&gt;
+&lt;/li&gt;
 &lt;li&gt;
 &lt;p&gt;Present atomic records or chunks of the data; in our case it will be the news articles crawled from lemonde.fr. This step is really important to complete so that you can also evaluate the quality of your raw data. Keep the iteration based mindset.&lt;/p&gt;
 &lt;/li&gt;
