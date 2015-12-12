@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>Data Science for collective intelligence</title><link href="http://fredhusser.github.io/" rel="alternate"></link><link href="http://fredhusser.github.io/feeds/frederic-husser.atom.xml" rel="self"></link><id>http://fredhusser.github.io/</id><updated>2015-12-11T12:00:00+01:00</updated><entry><title>Part 2 - Crawling a news website in Python with Scrapy and MongoDB</title><link href="http://fredhusser.github.io/web-crawling.html" rel="alternate"></link><updated>2015-12-11T12:00:00+01:00</updated><author><name>Frederic Husser</name></author><id>tag:fredhusser.github.io,2015-12-11:web-crawling.html</id><summary type="html">&lt;h2&gt;Quick start with Scrapy&lt;/h2&gt;
+&lt;p&gt;We will work on our virtual machine as defined in the previous part. The code that we will go through is available in the GitHub repository under the worker_scrapy subdirectory. If the VM is not running just type &lt;code&gt;vagrant up&lt;/code&gt; and then &lt;code&gt;vagrant ssh&lt;/code&gt; while being at the root of the project.&lt;/p&gt;
+&lt;p&gt;Since Scrapy will require some additional packages it is convenient to use a virtual python environment dedicated to our Scrapy worker. For doing this we will simply use the Conda package manager, and type in the terminal:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd&lt;/span&gt; /vagrant/worker_scrapy
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo conda create -n scrapyenv -y scrapy pymongo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This will create a python virtual environment named &lt;strong&gt;scrapyenv&lt;/strong&gt;, in which we will work with Scrapy and pymongo. For activating the environment just type in the bash:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;source &lt;/span&gt;activate scrapyenv
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In your terminal, each line should now start with &lt;strong&gt;(scrapyenv)&lt;/strong&gt;. We are now ready to build a crawler with scrapy.&lt;/p&gt;
+&lt;h2&gt;Project Structure&lt;/h2&gt;
+&lt;p&gt;At the root of our scraper project we create a python package called scraper in which we will pack all the code. The file scrapy.cfg states the location of the scraper settings module:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;[settings]&lt;/span&gt;
+&lt;span class="na"&gt;default&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;scraper.settings&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The scraper package contains:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A package containing the code of a &lt;strong&gt;spider&lt;/strong&gt;. The spider is crawling into a website, selects web pages from all the internal hyperlinks according to selection rules, and collects items in the html pages according to their css classes or html tags.&lt;/li&gt;
+&lt;li&gt;A module called &lt;strong&gt;items.py&lt;/strong&gt; defines the model of the object we want to extract. Defined as Python classes, the &lt;code&gt;Item&lt;/code&gt; objects are shaped according to the data we want to extract.&lt;/li&gt;
+&lt;li&gt;A module called &lt;strong&gt;pipelines.py&lt;/strong&gt; defines the pipeline of actions to be performed once an item was extracted from a web page. In our case it will consist in storing the data into our MongoDB instance.&lt;/li&gt;
+&lt;li&gt;The &lt;strong&gt;settings.py&lt;/strong&gt; module defines all the parameters that will be needed in the scraping process. It tells Scrapy which spiders to use, states which pipelines must be followed and also defines the database connection settings.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The file Structure of the projects looks therefore as following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;scraper
+  spiders
+    __init__.py
+    webarticles.py
+  __init__.py
+  items.py
+  pipelines.py
+  settings.py
+scrapy.cfg
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Defining the model of the items&lt;/h3&gt;
+&lt;p&gt;The Item class is defined in the Scrapy internals. We will create a child class that will contains the fields we want to extract from each lemonde.fr webpage: the title, the article body and the publication timestamp.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="kn"&gt;from&lt;/span&gt; &lt;span class="nn"&gt;scrapy.item&lt;/span&gt; &lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="n"&gt;Item&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;Field&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LeMondeArt&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Item&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;Define the model of the articles extracted from the website.&lt;/span&gt;
+&lt;span class="sd"&gt;    &amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;title&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Field&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;timestamp&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Field&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+    &lt;span class="n"&gt;body&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Field&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;This class models the items we want to extract, and this extraction is operated by the spider. &lt;/p&gt;
+&lt;h3&gt;Defining the spider for lemonde.fr&lt;/h3&gt;
+&lt;p&gt;There are different spiders base classes defined in Scrapy. We will use the CrawlSpider class as it contains procedures to extract data in the html page and to follow the hyperlinks. Thanks to class inheritance we only need to state the extraction rules, the parsing of the html data. We also create a method parse_article that tells Scrapy backend where to and how to get data in the html tree.&lt;/p&gt;
+&lt;p&gt;The class is looking like this:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;LeMondeSpider&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;CrawlSpider&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="n"&gt;name&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;lemonde&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;allowed_domains&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;lemonde.fr&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;start_urls&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;http://www.lemonde.fr/&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+    &lt;span class="n"&gt;article_item_fields&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+        &lt;span class="s"&gt;&amp;#39;title&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;.//article/h1/text()&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s"&gt;&amp;#39;timestamp&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;.//article/p[@class=&amp;quot;bloc_signature&amp;quot;]/time[@itemprop=&amp;quot;datePublished&amp;quot;]/@datetime&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+        &lt;span class="s"&gt;&amp;#39;body&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;.//article/div[@id=&amp;quot;articleBody&amp;quot;]/*&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+    &lt;span class="p"&gt;}&lt;/span&gt;
+    &lt;span class="n"&gt;rules&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;Rule&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LinkExtractor&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;allow&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;r&amp;quot;article/\d{4}/\d{2}/\d{2}/.+&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)),&lt;/span&gt; &lt;span class="n"&gt;callback&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;parse_article&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;follow&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+    &lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The dictionary &lt;code&gt;article_item_fields&lt;/code&gt; links each field of the &lt;code&gt;LeMondeItem&lt;/code&gt; to a &lt;strong&gt;xpath&lt;/strong&gt; selector telling where to get the data in the HTML tree. The &lt;code&gt;rules&lt;/code&gt; tuple tells how the URLs allowed to be followed look like. It helps for instance restricting the crawler on all the pages referring to articles.&lt;/p&gt;
+&lt;p&gt;Then we add to this class a method for parsing data from the web page: it features a Selector, a Loader and a Processor object. When the data is extracted this method also define how a new LeMondeItem is created and populated with fields. Explaining in details the internals of Scrapy is out of the scope of this tutorial. However, you can refer to the official documentation.&lt;/p&gt;
+&lt;p&gt;Add this method to the LeMondeSpider method.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;parse_article&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;selector&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Selector&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;loader&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;XPathItemLoader&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;LeMondeArt&lt;/span&gt;&lt;span class="p"&gt;(),&lt;/span&gt; &lt;span class="n"&gt;selector&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;selector&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;&lt;/span&gt;&lt;span class="se"&gt;\n\n&lt;/span&gt;&lt;span class="s"&gt;A response from &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s"&gt; just arrived!&amp;#39;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+        &lt;span class="c"&gt;# define processors&lt;/span&gt;
+        &lt;span class="n"&gt;text_input_processor&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;MapCompose&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;unicode&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;default_output_processor&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;Join&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+
+        &lt;span class="c"&gt;# Populate the LeMonde Item with the item loader&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;xpath&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;article_item_fields&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;iteritems&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+            &lt;span class="k"&gt;try&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;add_xpath&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;field&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;xpath&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;text_input_processor&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+            &lt;span class="k"&gt;except&lt;/span&gt; &lt;span class="ne"&gt;ValueError&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;XPath &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s"&gt; not found at url &lt;/span&gt;&lt;span class="si"&gt;%s&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;&lt;/span&gt; &lt;span class="o"&gt;%&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;xpath&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;response&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;url&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;loader&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;load_item&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Note that a spider is defined for a given website, as it fits to the HTML tags and CSS classes. However, thanks to the model defined in the &lt;code&gt;items.py&lt;/code&gt; module our data is generalized so that the same king of fields could be extracted from any other news website. To do that, it is just needed to create another CrawlSpider class, and adapt the fields.&lt;/p&gt;
+&lt;h3&gt;Defining the data storage pipelines&lt;/h3&gt;
+&lt;p&gt;In the module &lt;code&gt;pipelines.py&lt;/code&gt; we tell scrapy what to do when an item instance was created from a spider instance. Our pipeline only consists in processing the item fields and store them in a MongoDB. The class &lt;code&gt;__init__&lt;/code&gt; method creates a connection to the MongoDB service from the connection settings using the &lt;code&gt;pymongo&lt;/code&gt; driver.&lt;/p&gt;
+&lt;p&gt;The pipeline is generally defined and operates principally on the item instances. We use the &lt;strong&gt;bleach&lt;/strong&gt; package for cleaning the HTML text in the body. If you plan to make another pipeline object, make sure that you declare the &lt;code&gt;process_item&lt;/code&gt; as it is required by Scrapy.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;tags&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;h2&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;p&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;em&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s"&gt;&amp;#39;strong&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;WebArticlesPipeline&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;object&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;&amp;quot;&amp;quot;&amp;quot;A pipeline for storing scraped items in the database&amp;quot;&amp;quot;&amp;quot;&lt;/span&gt;
+    &lt;span class="n"&gt;MONGODB_COLLECTION&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="s"&gt;&amp;quot;lemonde&amp;quot;&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;__init__&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;collection_name&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;lemonde&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;connection&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;pymongo&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;MongoClient&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+            &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;MONGODB_SERVER_HOST&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt;
+            &lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;MONGODB_SERVER_PORT&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;db&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;connection&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;settings&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;MONGODB_DB&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]]&lt;/span&gt;
+        &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;collection&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;collection_name&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;process_item&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;spider&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+        &lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;timestamp&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;timestamp&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;split&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;+&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;)[&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
+        &lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;body&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;bleach&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;clean&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;body&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;],&lt;/span&gt; &lt;span class="n"&gt;tags&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;strip&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="n"&gt;valid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;True&lt;/span&gt;
+        &lt;span class="k"&gt;for&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt; &lt;span class="ow"&gt;in&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="ow"&gt;not&lt;/span&gt; &lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+                &lt;span class="n"&gt;valid&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="bp"&gt;False&lt;/span&gt;
+                &lt;span class="k"&gt;raise&lt;/span&gt; &lt;span class="n"&gt;DropItem&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Missing {0}!&amp;quot;&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;format&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;data&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+        &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;valid&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+            &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;collection&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;insert&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;dict&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;item&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+            &lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;msg&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s"&gt;&amp;quot;Question added to MongoDB database&amp;quot;&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+                    &lt;span class="n"&gt;level&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;log&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;DEBUG&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;spider&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="n"&gt;spider&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;item&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h3&gt;Defining the settings&lt;/h3&gt;
+&lt;p&gt;The settings module simply contains all the set of constants required for the crawling process: declare the spider settings, the pipelines to use and the database connection details.&lt;/p&gt;
+&lt;h3&gt;Fire-up crawling&lt;/h3&gt;
+&lt;p&gt;Once you are all set, from the root of the subdirectory, where the &lt;code&gt;scrapy.conf&lt;/code&gt; file is located you can start the crawler from the command line. The syntax is as follows:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;scrapy crawl lemonde
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Scrapy"></category><category term="MongoDB"></category><category term="Python"></category></entry><entry><title>Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda</title><link href="http://fredhusser.github.io/development-environment.html" rel="alternate"></link><updated>2015-12-10T12:00:00+01:00</updated><author><name>Frederic Husser</name></author><id>tag:fredhusser.github.io,2015-12-10:development-environment.html</id><summary type="html">&lt;p&gt;In this tutorial, we build an environment with Vagrant, Docker and Anaconda for doing firstly data analysis in Python. It should be totally agnostic on the choice of your operating system, be it Linux, Mac or Windows. Vagrant is used for configuring the linux Ubuntu virtual machine. The vagrant file located at the root of the project directory contains all the settings for that VM so that it can boot with all dependencies provisioned &lt;/p&gt;
+&lt;p&gt;Before starting make sure that you do have this three softwares installed on your machine:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;VirtualBox&lt;/li&gt;
+&lt;li&gt;Vagrant&lt;/li&gt;
+&lt;li&gt;Git&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Configuring a Linux Ubuntu machine&lt;/h2&gt;
+&lt;p&gt;Create a directory in which you will start the project. Of course the repository with all the code is available on GitHub, so that you can get started faster by cloning it.&lt;/p&gt;
+&lt;p&gt;In order to stress on the most important parts of our setup, we will go through the configuration ste-by-step.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;mkdir collective-intelligence
+&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;cd &lt;/span&gt;collective-intelligence
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;We will create a Vagrant configuration file Vagrantfile that will contain all information necessary to build and run the virtual machine. We setup the name of the VM, the network settings and port forwarding. We also add a synchronized folder so that all changes in the file system of the host machine are taken into account in the file system of the guest. &lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;VAGRANTFILE_API_VERSION = &amp;quot;2&amp;quot;
+Vagrant.configure(2) do |config|
+    config.vm.box = &amp;quot;ubuntu/trusty64&amp;quot;
+    config.vm.hostname = &amp;quot;vagrant-docker-anaconda&amp;quot;
+    config.vm.network &amp;quot;private_network&amp;quot;, ip: &amp;quot;192.168.50.100&amp;quot;
+    config.vm.network &amp;quot;forwarded_port&amp;quot;, guest: 80, host: 8080
+    config.vm.provider :virtualbox do |vb|
+        vb.customize [&amp;quot;modifyvm&amp;quot;, :id, &amp;quot;--memory&amp;quot;, &amp;quot;1024&amp;quot;, &amp;quot;--cpus&amp;quot;, &amp;quot;2&amp;quot;]
+    end
+
+    config.vm.synced_folder &amp;quot;.&amp;quot;, &amp;quot;/vagrant&amp;quot;, :type =&amp;gt; &amp;quot;nfs&amp;quot;
+    end
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Once the Vagrantfile is defined you are able to build and run the VM simply by typing:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant up
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Provisioning with the necessary software&lt;/h2&gt;
+&lt;p&gt;For starting developping applications for data analysis we need a Python distribution. For data analysis in Python, Anaconda offered by Continuum Analytics is very convenient, and contains all the necessary packages. First connect through ssh to your running VM in one command line.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant ssh
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then we will install anaconda. From the bash terminal connected to your VM, you can install Anaconda&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;sudo apt-get update
+
+&lt;span class="c"&gt;# Download from the Anaconda remote directory&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo wget http://09c8d0b2229f813c1b93-c95ac804525aac4b6dba79b00b39d1d3.r79.cf1.rackcdn.com/Anaconda-2.1.0-Linux-x86_64.sh
+
+&lt;span class="c"&gt;# Install the Anaconda distribution in batch mode&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo bash Anaconda-2.1.0-Linux-x86_64.sh -b
+
+&lt;span class="c"&gt;# Append the path of the Anaconda Python interpreter into your path&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;&lt;span class="nb"&gt;export &lt;/span&gt;&lt;span class="nv"&gt;PATH&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;/home/vagrant/anaconda/bin:&lt;/span&gt;&lt;span class="nv"&gt;$PATH&lt;/span&gt;&lt;span class="s2"&gt;&amp;quot;&lt;/span&gt;
+
+&lt;span class="c"&gt;# Update the package manager and install pymongo as we will use it&lt;/span&gt;
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo conda update -y conda
+&lt;span class="nv"&gt;$ &lt;/span&gt;sudo conda install -y pymongo
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Now you are all set and ready to work with Python. You can check your installation by starting the Python interpreter.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;vagrant@vagrant-docker-anaconda:~&lt;span class="nv"&gt;$ &lt;/span&gt;python
+Python 2.7.10 &lt;span class="p"&gt;|&lt;/span&gt;Anaconda 2.1.0 &lt;span class="o"&gt;(&lt;/span&gt;64-bit&lt;span class="o"&gt;)&lt;/span&gt;&lt;span class="p"&gt;|&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;default, Oct &lt;span class="m"&gt;19&lt;/span&gt; 2015, 18:04:42&lt;span class="o"&gt;)&lt;/span&gt;
+&lt;span class="o"&gt;[&lt;/span&gt;GCC 4.4.7 &lt;span class="m"&gt;20120313&lt;/span&gt; &lt;span class="o"&gt;(&lt;/span&gt;Red Hat 4.4.7-1&lt;span class="o"&gt;)]&lt;/span&gt; on linux2
+Type &lt;span class="s2"&gt;&amp;quot;help&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;copyright&amp;quot;&lt;/span&gt;, &lt;span class="s2"&gt;&amp;quot;credits&amp;quot;&lt;/span&gt; or &lt;span class="s2"&gt;&amp;quot;license&amp;quot;&lt;/span&gt; &lt;span class="k"&gt;for&lt;/span&gt; more information.
+Anaconda is brought to you by Continuum Analytics.
+Please check out: http://continuum.io/thanks and https://anaconda.org
+&amp;gt;&amp;gt;&amp;gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;h2&gt;Using Docker for our database and web application&lt;/h2&gt;
+&lt;p&gt;Now we are almost ready to develop our machine learning application ! We also want to have a MongoDB and Postgres SQL instances running, as well as a web application (in Python of course!). We will use Docker and Docker-Compose for that and build a multi-container application. Basically we want to have:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A &lt;strong&gt;MongoDB&lt;/strong&gt; server that will be accessible on the localhost of our VM, in which we will store our collected data and the outputs of the machine learning tasks;&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;PostgresSQL&lt;/strong&gt; server that will support our web application data;&lt;/li&gt;
+&lt;li&gt;A &lt;strong&gt;Flask&lt;/strong&gt; back-end for our application, which we will use for communicating our results to the outside world;&lt;/li&gt;
+&lt;li&gt;An &lt;strong&gt;nginx&lt;/strong&gt; service to forward requests either to the Flask app or the static files;&lt;/li&gt;
+&lt;li&gt;Some &lt;strong&gt;data-only containers&lt;/strong&gt; that will back-up the data from the database services.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Check out this blog post from &lt;a href="https://realpython.com/blog/python/dockerizing-flask-with-compose-and-machine-from-localhost-to-the-cloud/"&gt;Real Python&lt;/a&gt; which explains the process of building a muti-container application with flask, and from which we got inspired to build the docker-compose.yml file:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;restart&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;always&lt;/span&gt;
+  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;
+  &lt;span class="n"&gt;volumes_from&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="n"&gt;data_mongo&lt;/span&gt;
+  &lt;span class="n"&gt;ports&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;27017:27017&amp;quot;&lt;/span&gt;
+  &lt;span class="n"&gt;expose&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;27017&amp;quot;&lt;/span&gt;
+
+&lt;span class="n"&gt;data_mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+  &lt;span class="n"&gt;image&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="n"&gt;mongo&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;&lt;span class="mf"&gt;3.0&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="mi"&gt;2&lt;/span&gt;
+  &lt;span class="n"&gt;volumes&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt;
+    &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/vagrant/data/mongo:/var/lib/mongo:rw&amp;quot;&lt;/span&gt;
+  &lt;span class="n"&gt;entrypoint&lt;/span&gt;&lt;span class="o"&gt;:&lt;/span&gt; &lt;span class="s2"&gt;&amp;quot;/bin/true&amp;quot;&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;In order to make Vagrant able to run the containers as soon it starts up, you have to provision Docker and Docker-Compose from the Vagrantfile, in which you must add the following:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;config.vm.provision :docker
+config.vm.provision :docker_compose, yml: &amp;quot;/vagrant/docker-compose.yml&amp;quot;, rebuild: true, run: &amp;quot;always&amp;quot;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;By reloading the VM this will be taken into account and the docker client will try to build our MongoDB container. If you look directly into the repository you will notice that the other containers (nginx, Flask, PostgresSQL) are also defined. However it is out of the scope of this first set-up step to explain in details how to build them.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;vagrant reload
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;If the VM reloads successfully, it can take few minutes for Docker to set-up, you can check that the MongoDB container is effectively there. First reconnect by ssh to your VM and test your docker:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;vagrant@vagrant-docker-anaconda:~&lt;span class="nv"&gt;$ &lt;/span&gt;docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                      NAMES
+0c7cc8c4d3cd        mongo:3.0.2         &lt;span class="s2"&gt;&amp;quot;/entrypoint.sh mongo&amp;quot;&lt;/span&gt;   &lt;span class="m"&gt;10&lt;/span&gt; days ago         Up &lt;span class="m"&gt;5&lt;/span&gt; hours          0.0.0.0:27017-&amp;gt;27017/tcp   vagrant_mongo_1
+&lt;/pre&gt;&lt;/div&gt;</summary><category term="Vagrant"></category><category term="Docker"></category><category term="Python"></category></entry><entry><title>Part 0 - Collective intelligence in Python: introduction</title><link href="http://fredhusser.github.io/introduction-collective-intelligence.html" rel="alternate"></link><updated>2015-12-10T12:00:00+01:00</updated><author><name>Frederic Husser</name></author><id>tag:fredhusser.github.io,2015-12-10:introduction-collective-intelligence.html</id><summary type="html">&lt;p&gt;This blog is also meant to be a recipe for data scientists and physicists who want to be able to present and communicate about their work, so that their algorithms and analysis do not sleep forever deep in their GitHub account.&lt;/p&gt;
+&lt;h2&gt;So what are the goals we want to pursue?&lt;/h2&gt;
+&lt;p&gt;We want to build an application that collects a great number of blog posts, news articles or opinions in the web, use a semantic analysis to classify them based on content and allows users to browse faster in the corpus through a simple web application.&lt;/p&gt;
+&lt;p&gt;In this blog we intend to present some tools for doing data analysis with Python but also we want to propose a way to conduct data analysis projects. The goals are to reduce the frictions in the full process. Frictions stem usually from the difficulty to work together for people with different backgrounds and fields: developers, data scientists, users and consummers. &lt;/p&gt;
+&lt;p&gt;The lean data science is based upon the principle that data collection, analysis and visualization should be considered as a loop that must be completed at the fastest possible speed. At each iteration, developers and data scientists can work collaboratively to improve the solution at any level as they can see the full picture. So let's get to work.&lt;/p&gt;
+&lt;h2&gt;Mission, objectives and roadmap&lt;/h2&gt;
+&lt;h3&gt;Mission&lt;/h3&gt;
+&lt;p&gt;Our mission is to build a intelligent news web application able to classify and cluster articles and opinions. It must offer to users a simple but complete browsing experience, so that they can reach the biggest amount of relevant content in the least amount of time. Documents relevance is assessed using:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;semantic analysis&lt;/strong&gt;, that is to say extract features from the textual content, &lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;collaborative filtering&lt;/strong&gt; that is to say extract features on documents based on how users interact with them (likes, shares, comments).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Objectives&lt;/h3&gt;
+&lt;p&gt;In order to realize this mission we can set up few objectives and constraints. First and foremost, we want to be &lt;strong&gt;open source&lt;/strong&gt; and &lt;strong&gt;transparent&lt;/strong&gt;. When using machine learning algorithms with the aim of recommending content to users it is immensely necessary to be open to critics so that it acknowledged by users to be fair and not pursuing self-interests. &lt;/p&gt;
+&lt;p&gt;Secondly, we do not seek the ultimate model and algorithm that will unequivocally resolve the challenge. Instead, algorithms must be combined, confronted and strongly challenged. There is no debate on whether model-based recommendations are better that collaborative filtering when it comes to recommending content. Instead, it must be recognized that both have strengths and weeknesses and therefore the question is how to make them operate together.&lt;/p&gt;
+&lt;p&gt;Finally, we want to offer to users the capability to browse quickly in the documents although the corpus is meant to be important. The classification and clustering algorithms must integrate this objective so that documents indexing is perfectly matching the requirements of a smart data visualization.&lt;/p&gt;
+&lt;h3&gt;Roadmap&lt;/h3&gt;
+&lt;p&gt;In the first iteration we will tackle the issue of semantic analysis for classifying documents based on their content. In order to achieve this goal we will operate in an agile manner so that we complete the following steps the fastest possible.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Environment set-up&lt;/strong&gt;
+We will set up a reproducible development environment, with all the basic tools and frameworks we are going to need. For this we will be using Vagrant for taking care of our virtual machine on which to run Python scripts and Docker containers.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Data Collection&lt;/strong&gt;
+Then some input data will be scraped from the web in order to have a collection of articles on which to perform some analysis. We will use Scrapy, a web scraper in made in Python, to help us crawling articles from &lt;a href="http://www.lemonde.fr"&gt;&lt;em&gt;www.lemonde.fr&lt;/em&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Data analytics and text mining&lt;/strong&gt;
+Here is the hard work! Standing on the shoulder of giants like Numpy, NLTK and Scikit-Learn, we will build a document classification algorithm based on semantic analysis and self-organizing maps. We will rely a lot on the existing algorithms for natural language processing (NLP) such as in Scikit-Learn and NLTK, and we will eventually build our own self-organizing map classifier in Python.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;Data visualization and browsing&lt;/strong&gt;
+Building a light weight web application with Flask and pymongo, we will make possible to data scientists to communicate on their results, with a step-by-step workflow.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Present atomic records or chunks of the data; in our case it will be the news articles crawled from lemonde.fr. This step is really important to complete so that you can also evaluate the quality of your raw data. Keep the iteration based mindset.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Build data visualizations for presenting the results of your analysis, enabling the user to understand the full scope of it. We want also to make the data scientists able to evaluate the quality of the analysis they performed with an objective point of view.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Create reports that convey a message understandable by your audience. These reports are based on the analysis you conducted. For instance, what are the hot topics, the most transversal articles or the most specific ones? The value of your analysis is derived from the insight on the data it can give and the actions that can be taken.&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;</summary><category term="dev environment"></category><category term="Machine Learning"></category><category term="Agile Data Science"></category></entry></feed>

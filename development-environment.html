@@ -1,128 +1,151 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Data Science for collective intelligence, ">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="In this tutorial, we build an environment with Vagrant, Docker and Anaconda for doing firstly data analysis in Python. It should be totally agnostic on the choice of your operating system, be it ...">
+        <meta name="keywords" content="Docker, Python, Vagrant">
+        <link rel="icon" href="http://fredhusser.github.io/favicon.ico">
 
-        <link rel="alternate"  href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" title="Data Science for collective intelligence Full Atom Feed"/>
+        <title>Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda - Data Science for collective intelligence</title>
 
-        <title>Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda // Data Science for collective intelligence // </title>
+        <!-- Stylesheets -->
+        <link href="http://fredhusser.github.io/theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Data Science for collective intelligence Full Atom Feed" />
+        <link href="http://fredhusser.github.io/feeds/python.atom.xml" type="application/atom+xml" rel="alternate" title="Data Science for collective intelligence Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/pure.css">
-    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/pygments.css">
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $(".content").fitVids();
-        });
-    </script>
-</head>
+    </head>
 
-<body>
-<div class="pure-g-r" id="layout">
-    <div class="sidebar sidebar-article pure-u">
-        <header class="header-article">
-            <hgroup>
-                <a href="http://fredhusser.github.io/author/frederic-husser.html" title="See posts by Frederic Husser">
-                </a>
-                <h2 class="article-info">Frederic Husser</h2>
-                <small class="about-author"></small>
-                <h5>Published</h5>
-                <p>jeu. 10 décembre 2015</p>
-                <a href="/">&larr;Home</a>
-            </hgroup>
-        </header>
+    <body>
+
+        <!-- Header -->
+    <div class="header-container gradient">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="http://fredhusser.github.io/"><img class="mr20" src="http://fredhusser.github.io/image/logo.png" alt="logo">Data Science for collective intelligence</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="http://fredhusser.github.io/">Homepage</a>
+                                <a href="http://fredhusser.github.io/categories.html">Categories</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda</h1>
+                      <p class="header-date">By <a href="http://fredhusser.github.io/author/frederic-husser.html">Frederic Husser</a>, jeu. 10 décembre 2015, in category <a href="http://fredhusser.github.io/category/python.html">Python</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="http://fredhusser.github.io/tag/docker.html">Docker</a>, <a href="http://fredhusser.github.io/tag/python.html">Python</a>, <a href="http://fredhusser.github.io/tag/vagrant.html">Vagrant</a>                      </p>
+                  </div>
+              </div>
+        </div>
     </div>
-    <div class="pure-u">
-        <div class="content">
-            <section class="post">
-                <header class="post-header">
-                    <h1>Part 1 - Set-up of a development environment for Python Data Analysis with Vagrant, Docker and Anaconda</h1>
-                        <p class="post-meta">
-                            // under                                 <a class="post-category" href="http://fredhusser.github.io/tag/vagrant.html">Vagrant</a>
-                                <a class="post-category" href="http://fredhusser.github.io/tag/docker.html">Docker</a>
-                                <a class="post-category" href="http://fredhusser.github.io/tag/python.html">Python</a>
-                        </p>
-                </header>
-            </section>
-            <p>In this tutorial, we build an environment with Vagrant, Docker and Anaconda for doing firstly data analysis in Python. It should be totally agnostic on the choice of your operating system, be it Linux, Mac or Windows. Vagrant is used for configuring the linux Ubuntu virtual machine. The vagrant file located at the root of the project directory contains all the settings for that VM so that it can boot with all dependencies provisioned </p>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <p>In this tutorial, we build an environment with Vagrant, Docker and Anaconda for doing firstly data analysis in Python. It should be totally agnostic on the choice of your operating system, be it Linux, Mac or Windows. Vagrant is used for configuring the linux Ubuntu virtual machine. The vagrant file located at the root of the project directory contains all the settings for that VM so that it can boot with all dependencies provisioned </p>
 <p>Before starting make sure that you do have this three softwares installed on your machine:</p>
 <ul>
 <li>VirtualBox</li>
 <li>Vagrant</li>
 <li>Git</li>
 </ul>
-<h2 id="configuring-a-linux-ubuntu-machine">Configuring a Linux Ubuntu machine</h2>
+<h2>Configuring a Linux Ubuntu machine</h2>
 <p>Create a directory in which you will start the project. Of course the repository with all the code is available on GitHub, so that you can get started faster by cloning it.</p>
 <p>In order to stress on the most important parts of our setup, we will go through the configuration ste-by-step.</p>
-<div class="highlight"><pre><span class="code-line"><span class="nv">$ </span>mkdir collective-intelligence</span>
-<span class="code-line"><span class="nv">$ </span><span class="nb">cd </span>collective-intelligence</span>
+<div class="highlight"><pre><span class="nv">$ </span>mkdir collective-intelligence
+<span class="nv">$ </span><span class="nb">cd </span>collective-intelligence
 </pre></div>
 
 
 <p>We will create a Vagrant configuration file Vagrantfile that will contain all information necessary to build and run the virtual machine. We setup the name of the VM, the network settings and port forwarding. We also add a synchronized folder so that all changes in the file system of the host machine are taken into account in the file system of the guest. </p>
-<div class="highlight"><pre><span class="code-line">VAGRANTFILE_API_VERSION = &quot;2&quot;</span>
-<span class="code-line">Vagrant.configure(2) do |config|</span>
-<span class="code-line">    config.vm.box = &quot;ubuntu/trusty64&quot;</span>
-<span class="code-line">    config.vm.hostname = &quot;vagrant-docker-anaconda&quot;</span>
-<span class="code-line">    config.vm.network &quot;private_network&quot;, ip: &quot;192.168.50.100&quot;</span>
-<span class="code-line">    config.vm.network &quot;forwarded_port&quot;, guest: 80, host: 8080</span>
-<span class="code-line">    config.vm.provider :virtualbox do |vb|</span>
-<span class="code-line">        vb.customize [&quot;modifyvm&quot;, :id, &quot;--memory&quot;, &quot;1024&quot;, &quot;--cpus&quot;, &quot;2&quot;]</span>
-<span class="code-line">    end</span>
-<span class="code-line"></span>
-<span class="code-line">    config.vm.synced_folder &quot;.&quot;, &quot;/vagrant&quot;, :type =&gt; &quot;nfs&quot;</span>
-<span class="code-line">    end</span>
+<div class="highlight"><pre>VAGRANTFILE_API_VERSION = &quot;2&quot;
+Vagrant.configure(2) do |config|
+    config.vm.box = &quot;ubuntu/trusty64&quot;
+    config.vm.hostname = &quot;vagrant-docker-anaconda&quot;
+    config.vm.network &quot;private_network&quot;, ip: &quot;192.168.50.100&quot;
+    config.vm.network &quot;forwarded_port&quot;, guest: 80, host: 8080
+    config.vm.provider :virtualbox do |vb|
+        vb.customize [&quot;modifyvm&quot;, :id, &quot;--memory&quot;, &quot;1024&quot;, &quot;--cpus&quot;, &quot;2&quot;]
+    end
+
+    config.vm.synced_folder &quot;.&quot;, &quot;/vagrant&quot;, :type =&gt; &quot;nfs&quot;
+    end
 </pre></div>
 
 
 <p>Once the Vagrantfile is defined you are able to build and run the VM simply by typing:</p>
-<div class="highlight"><pre><span class="code-line"><span class="nv">$ </span>vagrant up</span>
+<div class="highlight"><pre><span class="nv">$ </span>vagrant up
 </pre></div>
 
 
-<h2 id="provisioning-with-the-necessary-software">Provisioning with the necessary software</h2>
+<h2>Provisioning with the necessary software</h2>
 <p>For starting developping applications for data analysis we need a Python distribution. For data analysis in Python, Anaconda offered by Continuum Analytics is very convenient, and contains all the necessary packages. First connect through ssh to your running VM in one command line.</p>
-<div class="highlight"><pre><span class="code-line"><span class="nv">$ </span>vagrant ssh</span>
+<div class="highlight"><pre><span class="nv">$ </span>vagrant ssh
 </pre></div>
 
 
 <p>Then we will install anaconda. From the bash terminal connected to your VM, you can install Anaconda</p>
-<div class="highlight"><pre><span class="code-line"><span class="nv">$ </span>sudo apt-get update</span>
-<span class="code-line"></span>
-<span class="code-line"><span class="c"># Download from the Anaconda remote directory</span></span>
-<span class="code-line"><span class="nv">$ </span>sudo wget http://09c8d0b2229f813c1b93-c95ac804525aac4b6dba79b00b39d1d3.r79.cf1.rackcdn.com/Anaconda-2.1.0-Linux-x86_64.sh</span>
-<span class="code-line"></span>
-<span class="code-line"><span class="c"># Install the Anaconda distribution in batch mode</span></span>
-<span class="code-line"><span class="nv">$ </span>sudo bash Anaconda-2.1.0-Linux-x86_64.sh -b</span>
-<span class="code-line"></span>
-<span class="code-line"><span class="c"># Append the path of the Anaconda Python interpreter into your path</span></span>
-<span class="code-line"><span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/home/vagrant/anaconda/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span></span>
-<span class="code-line"></span>
-<span class="code-line"><span class="c"># Update the package manager and install pymongo as we will use it</span></span>
-<span class="code-line"><span class="nv">$ </span>sudo conda update -y conda</span>
-<span class="code-line"><span class="nv">$ </span>sudo conda install -y pymongo</span>
+<div class="highlight"><pre><span class="nv">$ </span>sudo apt-get update
+
+<span class="c"># Download from the Anaconda remote directory</span>
+<span class="nv">$ </span>sudo wget http://09c8d0b2229f813c1b93-c95ac804525aac4b6dba79b00b39d1d3.r79.cf1.rackcdn.com/Anaconda-2.1.0-Linux-x86_64.sh
+
+<span class="c"># Install the Anaconda distribution in batch mode</span>
+<span class="nv">$ </span>sudo bash Anaconda-2.1.0-Linux-x86_64.sh -b
+
+<span class="c"># Append the path of the Anaconda Python interpreter into your path</span>
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;/home/vagrant/anaconda/bin:</span><span class="nv">$PATH</span><span class="s2">&quot;</span>
+
+<span class="c"># Update the package manager and install pymongo as we will use it</span>
+<span class="nv">$ </span>sudo conda update -y conda
+<span class="nv">$ </span>sudo conda install -y pymongo
 </pre></div>
 
 
 <p>Now you are all set and ready to work with Python. You can check your installation by starting the Python interpreter.</p>
-<div class="highlight"><pre><span class="code-line">vagrant@vagrant-docker-anaconda:~<span class="nv">$ </span>python</span>
-<span class="code-line">Python 2.7.10 <span class="p">|</span>Anaconda 2.1.0 <span class="o">(</span>64-bit<span class="o">)</span><span class="p">|</span> <span class="o">(</span>default, Oct <span class="m">19</span> 2015, 18:04:42<span class="o">)</span></span>
-<span class="code-line"><span class="o">[</span>GCC 4.4.7 <span class="m">20120313</span> <span class="o">(</span>Red Hat 4.4.7-1<span class="o">)]</span> on linux2</span>
-<span class="code-line">Type <span class="s2">&quot;help&quot;</span>, <span class="s2">&quot;copyright&quot;</span>, <span class="s2">&quot;credits&quot;</span> or <span class="s2">&quot;license&quot;</span> <span class="k">for</span> more information.</span>
-<span class="code-line">Anaconda is brought to you by Continuum Analytics.</span>
-<span class="code-line">Please check out: http://continuum.io/thanks and https://anaconda.org</span>
-<span class="code-line">&gt;&gt;&gt;</span>
+<div class="highlight"><pre>vagrant@vagrant-docker-anaconda:~<span class="nv">$ </span>python
+Python 2.7.10 <span class="p">|</span>Anaconda 2.1.0 <span class="o">(</span>64-bit<span class="o">)</span><span class="p">|</span> <span class="o">(</span>default, Oct <span class="m">19</span> 2015, 18:04:42<span class="o">)</span>
+<span class="o">[</span>GCC 4.4.7 <span class="m">20120313</span> <span class="o">(</span>Red Hat 4.4.7-1<span class="o">)]</span> on linux2
+Type <span class="s2">&quot;help&quot;</span>, <span class="s2">&quot;copyright&quot;</span>, <span class="s2">&quot;credits&quot;</span> or <span class="s2">&quot;license&quot;</span> <span class="k">for</span> more information.
+Anaconda is brought to you by Continuum Analytics.
+Please check out: http://continuum.io/thanks and https://anaconda.org
+&gt;&gt;&gt;
 </pre></div>
 
 
-<h2 id="using-docker-for-our-database-and-web-application">Using Docker for our database and web application</h2>
+<h2>Using Docker for our database and web application</h2>
 <p>Now we are almost ready to develop our machine learning application ! We also want to have a MongoDB and Postgres SQL instances running, as well as a web application (in Python of course!). We will use Docker and Docker-Compose for that and build a multi-container application. Basically we want to have:</p>
 <ul>
 <li>A <strong>MongoDB</strong> server that will be accessible on the localhost of our VM, in which we will store our collected data and the outputs of the machine learning tasks;</li>
@@ -132,73 +155,81 @@
 <li>Some <strong>data-only containers</strong> that will back-up the data from the database services.</li>
 </ul>
 <p>Check out this blog post from <a href="https://realpython.com/blog/python/dockerizing-flask-with-compose-and-machine-from-localhost-to-the-cloud/">Real Python</a> which explains the process of building a muti-container application with flask, and from which we got inspired to build the docker-compose.yml file:</p>
-<div class="highlight"><pre><span class="code-line"><span class="n">mongo</span><span class="o">:</span></span>
-<span class="code-line">  <span class="n">restart</span><span class="o">:</span> <span class="n">always</span></span>
-<span class="code-line">  <span class="n">image</span><span class="o">:</span> <span class="n">mongo</span><span class="o">:</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">2</span></span>
-<span class="code-line">  <span class="n">volumes_from</span><span class="o">:</span></span>
-<span class="code-line">    <span class="o">-</span> <span class="n">data_mongo</span></span>
-<span class="code-line">  <span class="n">ports</span><span class="o">:</span></span>
-<span class="code-line">    <span class="o">-</span> <span class="s2">&quot;27017:27017&quot;</span></span>
-<span class="code-line">  <span class="n">expose</span><span class="o">:</span></span>
-<span class="code-line">    <span class="o">-</span> <span class="s2">&quot;27017&quot;</span></span>
-<span class="code-line"></span>
-<span class="code-line"><span class="n">data_mongo</span><span class="o">:</span></span>
-<span class="code-line">  <span class="n">image</span><span class="o">:</span> <span class="n">mongo</span><span class="o">:</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">2</span></span>
-<span class="code-line">  <span class="n">volumes</span><span class="o">:</span></span>
-<span class="code-line">    <span class="o">-</span> <span class="s2">&quot;/vagrant/data/mongo:/var/lib/mongo:rw&quot;</span></span>
-<span class="code-line">  <span class="n">entrypoint</span><span class="o">:</span> <span class="s2">&quot;/bin/true&quot;</span></span>
+<div class="highlight"><pre><span class="n">mongo</span><span class="o">:</span>
+  <span class="n">restart</span><span class="o">:</span> <span class="n">always</span>
+  <span class="n">image</span><span class="o">:</span> <span class="n">mongo</span><span class="o">:</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">2</span>
+  <span class="n">volumes_from</span><span class="o">:</span>
+    <span class="o">-</span> <span class="n">data_mongo</span>
+  <span class="n">ports</span><span class="o">:</span>
+    <span class="o">-</span> <span class="s2">&quot;27017:27017&quot;</span>
+  <span class="n">expose</span><span class="o">:</span>
+    <span class="o">-</span> <span class="s2">&quot;27017&quot;</span>
+
+<span class="n">data_mongo</span><span class="o">:</span>
+  <span class="n">image</span><span class="o">:</span> <span class="n">mongo</span><span class="o">:</span><span class="mf">3.0</span><span class="o">.</span><span class="mi">2</span>
+  <span class="n">volumes</span><span class="o">:</span>
+    <span class="o">-</span> <span class="s2">&quot;/vagrant/data/mongo:/var/lib/mongo:rw&quot;</span>
+  <span class="n">entrypoint</span><span class="o">:</span> <span class="s2">&quot;/bin/true&quot;</span>
 </pre></div>
 
 
 <p>In order to make Vagrant able to run the containers as soon it starts up, you have to provision Docker and Docker-Compose from the Vagrantfile, in which you must add the following:</p>
-<div class="highlight"><pre><span class="code-line">config.vm.provision :docker</span>
-<span class="code-line">config.vm.provision :docker_compose, yml: &quot;/vagrant/docker-compose.yml&quot;, rebuild: true, run: &quot;always&quot;</span>
+<div class="highlight"><pre>config.vm.provision :docker
+config.vm.provision :docker_compose, yml: &quot;/vagrant/docker-compose.yml&quot;, rebuild: true, run: &quot;always&quot;
 </pre></div>
 
 
 <p>By reloading the VM this will be taken into account and the docker client will try to build our MongoDB container. If you look directly into the repository you will notice that the other containers (nginx, Flask, PostgresSQL) are also defined. However it is out of the scope of this first set-up step to explain in details how to build them.</p>
-<div class="highlight"><pre><span class="code-line"><span class="nv">$ </span>vagrant reload</span>
+<div class="highlight"><pre><span class="nv">$ </span>vagrant reload
 </pre></div>
 
 
 <p>If the VM reloads successfully, it can take few minutes for Docker to set-up, you can check that the MongoDB container is effectively there. First reconnect by ssh to your VM and test your docker:</p>
-<div class="highlight"><pre><span class="code-line">vagrant@vagrant-docker-anaconda:~<span class="nv">$ </span>docker ps</span>
-<span class="code-line">CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                      NAMES</span>
-<span class="code-line">0c7cc8c4d3cd        mongo:3.0.2         <span class="s2">&quot;/entrypoint.sh mongo&quot;</span>   <span class="m">10</span> days ago         Up <span class="m">5</span> hours          0.0.0.0:27017-&gt;27017/tcp   vagrant_mongo_1</span>
+<div class="highlight"><pre>vagrant@vagrant-docker-anaconda:~<span class="nv">$ </span>docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                      NAMES
+0c7cc8c4d3cd        mongo:3.0.2         <span class="s2">&quot;/entrypoint.sh mongo&quot;</span>   <span class="m">10</span> days ago         Up <span class="m">5</span> hours          0.0.0.0:27017-&gt;27017/tcp   vagrant_mongo_1
 </pre></div>
-            <div class="hr"></div>
-            <a href="#" class="go-top">Go Top</a>
-<footer class="footer">
-    <p>&copy; Data Science for collective intelligence &ndash;
-        Built with <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
-        for <a href="http://blog.getpelican.com/">Pelican</a>
-    </p>
-</footer>        </div>
+
+
+        
     </div>
-</div>
-    <script>
-        var $top = $('.go-top');
+        <!-- /Content --> 
 
-        // Show or hide the sticky footer button
-        $(window).scroll(function() {
-            if ($(this).scrollTop() > 200) {
-                $top.fadeIn(200);
-            } else {
-                $top.fadeOut(200);
-            }
-        });
-
-        // Animate the scroll to top
-        $top.click(function(event) {
-            event.preventDefault();
-            $('html, body').animate({scrollTop: 0}, 300);
-        })
-
-        // Makes sure that the href="#" attached to the <a> elements
-        // don't scroll you back up the page.
-        $('body').on('click', 'a[href="#"]', function(event) {
-            event.preventDefault();
-        });
-    </script>
-</body>
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="http://fredhusser.github.io/archives.html">Archives</a></li>
+                            <li><a href="http://fredhusser.github.io/tags.html">Tags</a></li>
+                            <li><a href="http://fredhusser.github.io/authors.html">Authors</a></li>
+                            <li><a href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Social</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://github.com/fredhusser" target="_blank">GitHub</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Links</div>
+                        <ul class="list-unstyled">
+                            <li><a href="#" target="_blank">Home</a></li>
+                        </ul>
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; blogname 2015</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
 </html>

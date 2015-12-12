@@ -1,74 +1,97 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Data Science for collective intelligence, ">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Quick start with Scrapy We will work on our virtual machine as defined in the previous part. The code that we will go through is available in the GitHub repository under the worker_scrapy ...">
+        <meta name="keywords" content="MongoDB, Python, Scrapy">
+        <link rel="icon" href="http://fredhusser.github.io/favicon.ico">
 
-        <link rel="alternate"  href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" title="Data Science for collective intelligence Full Atom Feed"/>
+        <title>Part 2 - Crawling a news website in Python with Scrapy and MongoDB - Data Science for collective intelligence</title>
 
-        <title>Part 2 - Crawling a news website in Python with Scrapy and MongoDB // Data Science for collective intelligence // </title>
+        <!-- Stylesheets -->
+        <link href="http://fredhusser.github.io/theme/css/all.min.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Data Science for collective intelligence Full Atom Feed" />
+        <link href="http://fredhusser.github.io/feeds/python.atom.xml" type="application/atom+xml" rel="alternate" title="Data Science for collective intelligence Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
 
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/pure.css">
-    <link rel="stylesheet" href="http://fredhusser.github.io/theme/css/pygments.css">
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $(".content").fitVids();
-        });
-    </script>
-</head>
+    </head>
 
-<body>
-<div class="pure-g-r" id="layout">
-    <div class="sidebar sidebar-article pure-u">
-        <header class="header-article">
-            <hgroup>
-                <a href="http://fredhusser.github.io/author/frederic-husser.html" title="See posts by Frederic Husser">
-                </a>
-                <h2 class="article-info">Frederic Husser</h2>
-                <small class="about-author"></small>
-                <h5>Published</h5>
-                <p>ven. 11 décembre 2015</p>
-                <a href="/">&larr;Home</a>
-            </hgroup>
-        </header>
+    <body>
+
+        <!-- Header -->
+    <div class="header-container gradient">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="http://fredhusser.github.io/"><img class="mr20" src="http://fredhusser.github.io/image/logo.png" alt="logo">Data Science for collective intelligence</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="http://fredhusser.github.io/">Homepage</a>
+                                <a href="http://fredhusser.github.io/categories.html">Categories</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">Part 2 - Crawling a news website in Python with Scrapy and MongoDB</h1>
+                      <p class="header-date">By <a href="http://fredhusser.github.io/author/frederic-husser.html">Frederic Husser</a>, ven. 11 décembre 2015, in category <a href="http://fredhusser.github.io/category/python.html">Python</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="http://fredhusser.github.io/tag/mongodb.html">MongoDB</a>, <a href="http://fredhusser.github.io/tag/python.html">Python</a>, <a href="http://fredhusser.github.io/tag/scrapy.html">Scrapy</a>                      </p>
+                  </div>
+              </div>
+        </div>
     </div>
-    <div class="pure-u">
-        <div class="content">
-            <section class="post">
-                <header class="post-header">
-                    <h1>Part 2 - Crawling a news website in Python with Scrapy and MongoDB</h1>
-                        <p class="post-meta">
-                            // under                                 <a class="post-category" href="http://fredhusser.github.io/tag/scrapy.html">Scrapy</a>
-                                <a class="post-category" href="http://fredhusser.github.io/tag/mongodb.html">MongoDB</a>
-                                <a class="post-category" href="http://fredhusser.github.io/tag/python.html">Python</a>
-                        </p>
-                </header>
-            </section>
-            <h2 id="quick-start-with-scrapy">Quick start with Scrapy</h2>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <h2>Quick start with Scrapy</h2>
 <p>We will work on our virtual machine as defined in the previous part. The code that we will go through is available in the GitHub repository under the worker_scrapy subdirectory. If the VM is not running just type <code>vagrant up</code> and then <code>vagrant ssh</code> while being at the root of the project.</p>
 <p>Since Scrapy will require some additional packages it is convenient to use a virtual python environment dedicated to our Scrapy worker. For doing this we will simply use the Conda package manager, and type in the terminal:</p>
-<div class="highlight"><pre><span class="code-line"><span class="nv">$ </span><span class="nb">cd</span> /vagrant/worker_scrapy</span>
-<span class="code-line"><span class="nv">$ </span>sudo conda create -n scrapyenv -y scrapy pymongo</span>
+<div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /vagrant/worker_scrapy
+<span class="nv">$ </span>sudo conda create -n scrapyenv -y scrapy pymongo
 </pre></div>
 
 
 <p>This will create a python virtual environment named <strong>scrapyenv</strong>, in which we will work with Scrapy and pymongo. For activating the environment just type in the bash:</p>
-<div class="highlight"><pre><span class="code-line"><span class="nv">$ </span><span class="nb">source </span>activate scrapyenv</span>
+<div class="highlight"><pre><span class="nv">$ </span><span class="nb">source </span>activate scrapyenv
 </pre></div>
 
 
 <p>In your terminal, each line should now start with <strong>(scrapyenv)</strong>. We are now ready to build a crawler with scrapy.</p>
-<h2 id="project-structure">Project Structure</h2>
+<h2>Project Structure</h2>
 <p>At the root of our scraper project we create a python package called scraper in which we will pack all the code. The file scrapy.cfg states the location of the scraper settings module:</p>
-<div class="highlight"><pre><span class="code-line"><span class="k">[settings]</span></span>
-<span class="code-line"><span class="na">default</span> <span class="o">=</span> <span class="s">scraper.settings</span></span>
+<div class="highlight"><pre><span class="k">[settings]</span>
+<span class="na">default</span> <span class="o">=</span> <span class="s">scraper.settings</span>
 </pre></div>
 
 
@@ -80,144 +103,152 @@
 <li>The <strong>settings.py</strong> module defines all the parameters that will be needed in the scraping process. It tells Scrapy which spiders to use, states which pipelines must be followed and also defines the database connection settings.</li>
 </ul>
 <p>The file Structure of the projects looks therefore as following:</p>
-<div class="highlight"><pre><span class="code-line">scraper</span>
-<span class="code-line">  spiders</span>
-<span class="code-line">    __init__.py</span>
-<span class="code-line">    webarticles.py</span>
-<span class="code-line">  __init__.py</span>
-<span class="code-line">  items.py</span>
-<span class="code-line">  pipelines.py</span>
-<span class="code-line">  settings.py</span>
-<span class="code-line">scrapy.cfg</span>
+<div class="highlight"><pre>scraper
+  spiders
+    __init__.py
+    webarticles.py
+  __init__.py
+  items.py
+  pipelines.py
+  settings.py
+scrapy.cfg
 </pre></div>
 
 
-<h3 id="defining-the-model-of-the-items">Defining the model of the items</h3>
+<h3>Defining the model of the items</h3>
 <p>The Item class is defined in the Scrapy internals. We will create a child class that will contains the fields we want to extract from each lemonde.fr webpage: the title, the article body and the publication timestamp.</p>
-<div class="highlight"><pre><span class="code-line"><span class="kn">from</span> <span class="nn">scrapy.item</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Field</span></span>
-<span class="code-line"></span>
-<span class="code-line"><span class="k">class</span> <span class="nc">LeMondeArt</span><span class="p">(</span><span class="n">Item</span><span class="p">):</span></span>
-<span class="code-line">    <span class="sd">&quot;&quot;&quot;Define the model of the articles extracted from the website.</span></span>
-<span class="code-line"><span class="sd">    &quot;&quot;&quot;</span></span>
-<span class="code-line">    <span class="n">title</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span></span>
-<span class="code-line">    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span></span>
-<span class="code-line">    <span class="n">body</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span></span>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">scrapy.item</span> <span class="kn">import</span> <span class="n">Item</span><span class="p">,</span> <span class="n">Field</span>
+
+<span class="k">class</span> <span class="nc">LeMondeArt</span><span class="p">(</span><span class="n">Item</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Define the model of the articles extracted from the website.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="n">Field</span><span class="p">()</span>
 </pre></div>
 
 
 <p>This class models the items we want to extract, and this extraction is operated by the spider. </p>
-<h3 id="defining-the-spider-for-lemondefr">Defining the spider for lemonde.fr</h3>
+<h3>Defining the spider for lemonde.fr</h3>
 <p>There are different spiders base classes defined in Scrapy. We will use the CrawlSpider class as it contains procedures to extract data in the html page and to follow the hyperlinks. Thanks to class inheritance we only need to state the extraction rules, the parsing of the html data. We also create a method parse_article that tells Scrapy backend where to and how to get data in the html tree.</p>
 <p>The class is looking like this:</p>
-<div class="highlight"><pre><span class="code-line"><span class="k">class</span> <span class="nc">LeMondeSpider</span><span class="p">(</span><span class="n">CrawlSpider</span><span class="p">):</span></span>
-<span class="code-line">    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;lemonde&quot;</span></span>
-<span class="code-line">    <span class="n">allowed_domains</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;lemonde.fr&quot;</span><span class="p">]</span></span>
-<span class="code-line">    <span class="n">start_urls</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;http://www.lemonde.fr/&quot;</span><span class="p">]</span></span>
-<span class="code-line">    <span class="n">article_item_fields</span> <span class="o">=</span> <span class="p">{</span></span>
-<span class="code-line">        <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;.//article/h1/text()&#39;</span><span class="p">,</span></span>
-<span class="code-line">        <span class="s">&#39;timestamp&#39;</span><span class="p">:</span> <span class="s">&#39;.//article/p[@class=&quot;bloc_signature&quot;]/time[@itemprop=&quot;datePublished&quot;]/@datetime&#39;</span><span class="p">,</span></span>
-<span class="code-line">        <span class="s">&#39;body&#39;</span><span class="p">:</span> <span class="s">&#39;.//article/div[@id=&quot;articleBody&quot;]/*&#39;</span><span class="p">,</span></span>
-<span class="code-line">    <span class="p">}</span></span>
-<span class="code-line">    <span class="n">rules</span> <span class="o">=</span> <span class="p">(</span><span class="n">Rule</span><span class="p">(</span><span class="n">LinkExtractor</span><span class="p">(</span><span class="n">allow</span><span class="o">=</span><span class="p">(</span><span class="s">r&quot;article/\d{4}/\d{2}/\d{2}/.+&quot;</span><span class="p">)),</span> <span class="n">callback</span><span class="o">=</span><span class="s">&quot;parse_article&quot;</span><span class="p">,</span> <span class="n">follow</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span></span>
-<span class="code-line">    <span class="p">)</span></span>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">LeMondeSpider</span><span class="p">(</span><span class="n">CrawlSpider</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;lemonde&quot;</span>
+    <span class="n">allowed_domains</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;lemonde.fr&quot;</span><span class="p">]</span>
+    <span class="n">start_urls</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;http://www.lemonde.fr/&quot;</span><span class="p">]</span>
+    <span class="n">article_item_fields</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="s">&#39;.//article/h1/text()&#39;</span><span class="p">,</span>
+        <span class="s">&#39;timestamp&#39;</span><span class="p">:</span> <span class="s">&#39;.//article/p[@class=&quot;bloc_signature&quot;]/time[@itemprop=&quot;datePublished&quot;]/@datetime&#39;</span><span class="p">,</span>
+        <span class="s">&#39;body&#39;</span><span class="p">:</span> <span class="s">&#39;.//article/div[@id=&quot;articleBody&quot;]/*&#39;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">rules</span> <span class="o">=</span> <span class="p">(</span><span class="n">Rule</span><span class="p">(</span><span class="n">LinkExtractor</span><span class="p">(</span><span class="n">allow</span><span class="o">=</span><span class="p">(</span><span class="s">r&quot;article/\d{4}/\d{2}/\d{2}/.+&quot;</span><span class="p">)),</span> <span class="n">callback</span><span class="o">=</span><span class="s">&quot;parse_article&quot;</span><span class="p">,</span> <span class="n">follow</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+    <span class="p">)</span>
 </pre></div>
 
 
 <p>The dictionary <code>article_item_fields</code> links each field of the <code>LeMondeItem</code> to a <strong>xpath</strong> selector telling where to get the data in the HTML tree. The <code>rules</code> tuple tells how the URLs allowed to be followed look like. It helps for instance restricting the crawler on all the pages referring to articles.</p>
 <p>Then we add to this class a method for parsing data from the web page: it features a Selector, a Loader and a Processor object. When the data is extracted this method also define how a new LeMondeItem is created and populated with fields. Explaining in details the internals of Scrapy is out of the scope of this tutorial. However, you can refer to the official documentation.</p>
 <p>Add this method to the LeMondeSpider method.</p>
-<div class="highlight"><pre><span class="code-line">    <span class="k">def</span> <span class="nf">parse_article</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span></span>
-<span class="code-line">        <span class="n">selector</span> <span class="o">=</span> <span class="n">Selector</span><span class="p">(</span><span class="n">response</span><span class="p">)</span></span>
-<span class="code-line">        <span class="n">loader</span> <span class="o">=</span> <span class="n">XPathItemLoader</span><span class="p">(</span><span class="n">LeMondeArt</span><span class="p">(),</span> <span class="n">selector</span><span class="o">=</span><span class="n">selector</span><span class="p">)</span></span>
-<span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n\n</span><span class="s">A response from </span><span class="si">%s</span><span class="s"> just arrived!&#39;</span> <span class="o">%</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span></span>
-<span class="code-line"></span>
-<span class="code-line">        <span class="c"># define processors</span></span>
-<span class="code-line">        <span class="n">text_input_processor</span> <span class="o">=</span> <span class="n">MapCompose</span><span class="p">(</span><span class="nb">unicode</span><span class="o">.</span><span class="n">strip</span><span class="p">)</span></span>
-<span class="code-line">        <span class="n">loader</span><span class="o">.</span><span class="n">default_output_processor</span> <span class="o">=</span> <span class="n">Join</span><span class="p">()</span></span>
-<span class="code-line"></span>
-<span class="code-line">        <span class="c"># Populate the LeMonde Item with the item loader</span></span>
-<span class="code-line">        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">xpath</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">article_item_fields</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span></span>
-<span class="code-line">            <span class="k">try</span><span class="p">:</span></span>
-<span class="code-line">                <span class="n">loader</span><span class="o">.</span><span class="n">add_xpath</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">xpath</span><span class="p">,</span> <span class="n">text_input_processor</span><span class="p">)</span></span>
-<span class="code-line">            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span></span>
-<span class="code-line">                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&quot;XPath </span><span class="si">%s</span><span class="s"> not found at url </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">xpath</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">))</span></span>
-<span class="code-line">        <span class="k">yield</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_item</span><span class="p">()</span></span>
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">parse_article</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">Selector</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">loader</span> <span class="o">=</span> <span class="n">XPathItemLoader</span><span class="p">(</span><span class="n">LeMondeArt</span><span class="p">(),</span> <span class="n">selector</span><span class="o">=</span><span class="n">selector</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n\n</span><span class="s">A response from </span><span class="si">%s</span><span class="s"> just arrived!&#39;</span> <span class="o">%</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">)</span>
+
+        <span class="c"># define processors</span>
+        <span class="n">text_input_processor</span> <span class="o">=</span> <span class="n">MapCompose</span><span class="p">(</span><span class="nb">unicode</span><span class="o">.</span><span class="n">strip</span><span class="p">)</span>
+        <span class="n">loader</span><span class="o">.</span><span class="n">default_output_processor</span> <span class="o">=</span> <span class="n">Join</span><span class="p">()</span>
+
+        <span class="c"># Populate the LeMonde Item with the item loader</span>
+        <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="n">xpath</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">article_item_fields</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">loader</span><span class="o">.</span><span class="n">add_xpath</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">xpath</span><span class="p">,</span> <span class="n">text_input_processor</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s">&quot;XPath </span><span class="si">%s</span><span class="s"> not found at url </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">xpath</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">url</span><span class="p">))</span>
+        <span class="k">yield</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_item</span><span class="p">()</span>
 </pre></div>
 
 
 <p>Note that a spider is defined for a given website, as it fits to the HTML tags and CSS classes. However, thanks to the model defined in the <code>items.py</code> module our data is generalized so that the same king of fields could be extracted from any other news website. To do that, it is just needed to create another CrawlSpider class, and adapt the fields.</p>
-<h3 id="defining-the-data-storage-pipelines">Defining the data storage pipelines</h3>
+<h3>Defining the data storage pipelines</h3>
 <p>In the module <code>pipelines.py</code> we tell scrapy what to do when an item instance was created from a spider instance. Our pipeline only consists in processing the item fields and store them in a MongoDB. The class <code>__init__</code> method creates a connection to the MongoDB service from the connection settings using the <code>pymongo</code> driver.</p>
 <p>The pipeline is generally defined and operates principally on the item instances. We use the <strong>bleach</strong> package for cleaning the HTML text in the body. If you plan to make another pipeline object, make sure that you declare the <code>process_item</code> as it is required by Scrapy.</p>
-<div class="highlight"><pre><span class="code-line"><span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;h2&#39;</span><span class="p">,</span> <span class="s">&#39;p&#39;</span><span class="p">,</span> <span class="s">&#39;em&#39;</span><span class="p">,</span> <span class="s">&#39;strong&#39;</span><span class="p">]</span></span>
-<span class="code-line"></span>
-<span class="code-line"><span class="k">class</span> <span class="nc">WebArticlesPipeline</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></span>
-<span class="code-line">    <span class="sd">&quot;&quot;&quot;A pipeline for storing scraped items in the database&quot;&quot;&quot;</span></span>
-<span class="code-line">    <span class="n">MONGODB_COLLECTION</span> <span class="o">=</span> <span class="s">&quot;lemonde&quot;</span></span>
-<span class="code-line"></span>
-<span class="code-line">    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_name</span><span class="o">=</span><span class="s">&#39;lemonde&#39;</span><span class="p">):</span></span>
-<span class="code-line">        <span class="n">connection</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span></span>
-<span class="code-line">            <span class="n">settings</span><span class="p">[</span><span class="s">&#39;MONGODB_SERVER_HOST&#39;</span><span class="p">],</span></span>
-<span class="code-line">            <span class="n">settings</span><span class="p">[</span><span class="s">&#39;MONGODB_SERVER_PORT&#39;</span><span class="p">]</span></span>
-<span class="code-line">        <span class="p">)</span></span>
-<span class="code-line">        <span class="n">db</span> <span class="o">=</span> <span class="n">connection</span><span class="p">[</span><span class="n">settings</span><span class="p">[</span><span class="s">&quot;MONGODB_DB&quot;</span><span class="p">]]</span></span>
-<span class="code-line">        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">collection_name</span><span class="p">]</span></span>
-<span class="code-line"></span>
-<span class="code-line">    <span class="k">def</span> <span class="nf">process_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">spider</span><span class="p">):</span></span>
-<span class="code-line">        <span class="n">item</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;+&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></span>
-<span class="code-line">        <span class="n">item</span><span class="p">[</span><span class="s">&quot;body&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">bleach</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s">&quot;body&quot;</span><span class="p">],</span> <span class="n">tags</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></span>
-<span class="code-line">        <span class="n">valid</span> <span class="o">=</span> <span class="bp">True</span></span>
-<span class="code-line">        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span></span>
-<span class="code-line">            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span></span>
-<span class="code-line">                <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span></span>
-<span class="code-line">                <span class="k">raise</span> <span class="n">DropItem</span><span class="p">(</span><span class="s">&quot;Missing {0}!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span></span>
-<span class="code-line">        <span class="k">if</span> <span class="n">valid</span><span class="p">:</span></span>
-<span class="code-line">            <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">item</span><span class="p">))</span></span>
-<span class="code-line">            <span class="n">log</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="s">&quot;Question added to MongoDB database&quot;</span><span class="p">,</span></span>
-<span class="code-line">                    <span class="n">level</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">spider</span><span class="o">=</span><span class="n">spider</span><span class="p">)</span></span>
-<span class="code-line">        <span class="k">return</span> <span class="n">item</span></span>
+<div class="highlight"><pre><span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;h2&#39;</span><span class="p">,</span> <span class="s">&#39;p&#39;</span><span class="p">,</span> <span class="s">&#39;em&#39;</span><span class="p">,</span> <span class="s">&#39;strong&#39;</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">WebArticlesPipeline</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A pipeline for storing scraped items in the database&quot;&quot;&quot;</span>
+    <span class="n">MONGODB_COLLECTION</span> <span class="o">=</span> <span class="s">&quot;lemonde&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection_name</span><span class="o">=</span><span class="s">&#39;lemonde&#39;</span><span class="p">):</span>
+        <span class="n">connection</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span>
+            <span class="n">settings</span><span class="p">[</span><span class="s">&#39;MONGODB_SERVER_HOST&#39;</span><span class="p">],</span>
+            <span class="n">settings</span><span class="p">[</span><span class="s">&#39;MONGODB_SERVER_PORT&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">db</span> <span class="o">=</span> <span class="n">connection</span><span class="p">[</span><span class="n">settings</span><span class="p">[</span><span class="s">&quot;MONGODB_DB&quot;</span><span class="p">]]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">collection</span> <span class="o">=</span> <span class="n">db</span><span class="p">[</span><span class="n">collection_name</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">process_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">spider</span><span class="p">):</span>
+        <span class="n">item</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">item</span><span class="p">[</span><span class="s">&quot;timestamp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;+&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">item</span><span class="p">[</span><span class="s">&quot;body&quot;</span><span class="p">]</span><span class="o">=</span><span class="n">bleach</span><span class="o">.</span><span class="n">clean</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s">&quot;body&quot;</span><span class="p">],</span> <span class="n">tags</span><span class="p">,</span> <span class="n">strip</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">item</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">raise</span> <span class="n">DropItem</span><span class="p">(</span><span class="s">&quot;Missing {0}!&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">valid</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+            <span class="n">log</span><span class="o">.</span><span class="n">msg</span><span class="p">(</span><span class="s">&quot;Question added to MongoDB database&quot;</span><span class="p">,</span>
+                    <span class="n">level</span> <span class="o">=</span> <span class="n">log</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">spider</span><span class="o">=</span><span class="n">spider</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span>
 </pre></div>
 
 
-<h3 id="defining-the-settings">Defining the settings</h3>
+<h3>Defining the settings</h3>
 <p>The settings module simply contains all the set of constants required for the crawling process: declare the spider settings, the pipelines to use and the database connection details.</p>
-<h3 id="fire-up-crawling">Fire-up crawling</h3>
+<h3>Fire-up crawling</h3>
 <p>Once you are all set, from the root of the subdirectory, where the <code>scrapy.conf</code> file is located you can start the crawler from the command line. The syntax is as follows:</p>
-<div class="highlight"><pre><span class="code-line">scrapy crawl lemonde</span>
+<div class="highlight"><pre>scrapy crawl lemonde
 </pre></div>
-            <div class="hr"></div>
-            <a href="#" class="go-top">Go Top</a>
-<footer class="footer">
-    <p>&copy; Data Science for collective intelligence &ndash;
-        Built with <a href="https://github.com/PurePelicanTheme/pure">Pure Theme</a>
-        for <a href="http://blog.getpelican.com/">Pelican</a>
-    </p>
-</footer>        </div>
+
+
+        
     </div>
-</div>
-    <script>
-        var $top = $('.go-top');
+        <!-- /Content --> 
 
-        // Show or hide the sticky footer button
-        $(window).scroll(function() {
-            if ($(this).scrollTop() > 200) {
-                $top.fadeIn(200);
-            } else {
-                $top.fadeOut(200);
-            }
-        });
-
-        // Animate the scroll to top
-        $top.click(function(event) {
-            event.preventDefault();
-            $('html, body').animate({scrollTop: 0}, 300);
-        })
-
-        // Makes sure that the href="#" attached to the <a> elements
-        // don't scroll you back up the page.
-        $('body').on('click', 'a[href="#"]', function(event) {
-            event.preventDefault();
-        });
-    </script>
-</body>
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="http://fredhusser.github.io/archives.html">Archives</a></li>
+                            <li><a href="http://fredhusser.github.io/tags.html">Tags</a></li>
+                            <li><a href="http://fredhusser.github.io/authors.html">Authors</a></li>
+                            <li><a href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate">Atom Feed</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Social</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://github.com/fredhusser" target="_blank">GitHub</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Links</div>
+                        <ul class="list-unstyled">
+                            <li><a href="#" target="_blank">Home</a></li>
+                        </ul>
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; blogname 2015</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
 </html>
