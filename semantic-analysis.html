@@ -82,7 +82,8 @@
 <p>In this tutorial we will present a workflow for building such a classifier in Python, using extensively Numpy, Pandas and Scikit-Learn. From a more abstract perspective we will also propose a general template of a workflow chaining algorithms together. Each building block of the whole workflow is an algorithm operated on the dataset and producing an output which can be then in turn operated on by the following block.</p>
 <p>All the code featured in this page can be downloaded from <a href="https://github.com/fredhusser/collective-intelligence">GitHub</a></p>
 <h2>Building blocks of the classifier</h2>
-<p>Our semantic, graphical and automatic classification algorithm will be built in four steps:</p>
+<p>Our semantic, graphical and automatic classification algorithm will be built in four steps.
+<img alt="Photo" src="./workflow_v1.png" /></p>
 <ul>
 <li>
 <p><strong>Vectorization</strong>: The first task is to extract features from the textual content. Vectorization and weighting is performed using the term-frequencies inverse document-frequencies method (TF-IDF): documents are vectorized, each token (a word or group of consecutive words) being a component, and the weights are proportional to the appearance frequency within the document and modulated by their inverse document frequency. This last steps ensures that terms appearing too often and therefore not discriminating enough, like stop words, can be filtered out. Similarly words appearing in too few documents and therefore too specific or rare can also be filtered out.</p>
