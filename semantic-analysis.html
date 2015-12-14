@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="In this tutorial, we tackle the first challenge of building a news article automatic classifier based on the documents content. On our last post, we were able to scrape some articles from a news ...">
+        <meta name="keywords" content="NLTK, Scikit-Learn">
+        <link rel="icon" href="./favicon.ico">
+
+        <title>Part 3A - Semantic Analysis and Text Clustering with Scikit-Learn - Data Science for collective intelligence</title>
+
+        <!-- Stylesheets -->
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./theme/css/fonts.css" rel="stylesheet">
+        <link href="./theme/css/nest.css" rel="stylesheet">
+        <link href="./theme/css/pygment.css" rel="stylesheet">
+        <!-- /Stylesheets -->
+
+        <!-- RSS Feeds -->
+        <link href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Data Science for collective intelligence Full Atom Feed" />
+        <link href="http://fredhusser.github.io/feeds/python.atom.xml" type="application/atom+xml" rel="alternate" title="Data Science for collective intelligence Categories Atom Feed" />
+        <!-- /RSS Feeds -->
+
+        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
+
+
+    </head>
+
+    <body>
+
+        <!-- Header -->
+    <div class="header-container gradient">
+
+            <!-- Static navbar -->
+            <div class="container">
+                <div class="header-nav">
+                    <div class="header-logo">
+                        <a class="pull-left" href="./">Data Science for collective intelligence</a>
+                    </div>
+                    <div class="nav pull-right">
+                                <a href="./">Homepage</a>
+                                <a href="./categories.html">Categories</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /Static navbar -->
+
+            <!-- Header -->
+    <!-- Header -->
+    <div class="container header-wrapper">
+        <div class="row">
+              <div class="col-lg-12">
+                  <div class="header-content">
+                      <h1 class="header-title">Part 3A - Semantic Analysis and Text Clustering with Scikit-Learn</h1>
+                      <p class="header-date">By <a href="./author/frederic-husser.html">Frederic Husser</a>, sam. 12 décembre 2015, in category <a href="./category/python.html">Python</a></p>
+                      <div class="header-underline"></div>
+                      <div class="clearfix"></div>
+                      <p class="pull-right header-tags">
+                          <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
+<a href="./tag/nltk.html">NLTK</a>, <a href="./tag/scikit-learn.html">Scikit-Learn</a>                      </p>
+                  </div>
+              </div>
+        </div>
+    </div>
+    <!-- /Header -->
+            <!-- /Header -->
+
+        </div>
+        <!-- /Header -->
+
+
+        <!-- Content -->
+    <div class="container content">
+        <p>In this tutorial, we tackle the first challenge of building a news article automatic classifier based on the documents content. On our last post, we were able to scrape some articles from a news website, that were stored into a MongoDB instance. We want to classify all these articles, finding out groups of similar articles based on their topics. The constraint is that we do not know in advance the main topics coming up throughout te corpus. This should be infered from our analysis. </p>
+<p>Our second constraint, is that we want to be able to classify a large number of articles. Therefore the algorithms used should be scalable, but also in their design tolerate a large variety of topics. In order to ease browsing into the corpus by humans, we want to visualize graphically the result of the classification.</p>
+<p>In this tutorial we will present a workflow for building such a classifier in Python, using extensively Numpy, Pandas and Scikit-Learn. From a more abstract perspective we will also propose a general template of a workflow chaining algorithms together. Each building block of the whole workflow is an algorithm operated on the dataset and producing an output which can be then in turn operated on by the following block.</p>
+<p>All the code featured in this page can be downloaded from <a href="https://github.com/fredhusser/collective-intelligence">GitHub</a></p>
+<h2>Building blocks of the classifier</h2>
+<p>Our semantic, graphical and automatic classification algorithm will be built in four steps:</p>
+<ul>
+<li>
+<p><strong>Vectorization</strong>: The first task is to extract features from the textual content. Vectorization and weighting is performed using the term-frequencies inverse document-frequencies method (TF-IDF): documents are vectorized, each token (a word or group of consecutive words) being a component, and the weights are proportional to the appearance frequency within the document and modulated by their inverse document frequency. This last steps ensures that terms appearing too often and therefore not discriminating enough, like stop words, can be filtered out. Similarly words appearing in too few documents and therefore too specific or rare can also be filtered out.</p>
+</li>
+<li>
+<p><strong>Semantic indexing</strong>: From the TF-IDF vectorization it is really common to have a documents-term matrix with several thousands different features. This results in a really noisy dataset: several words might be appearing with different stems and homonymy and polysemy is also a recurrent issue. In addition to this, high dimensionality comes with high computing cost at the analysis step. Dimensionality reduction using semantic analysis is our method to overcome these issues. At our disposal several techniques are available using matrix factorization techniques: latent semantic indexing (LSI), non-negative matrix factorization (NMF) and latent Dirichlet allocation (LDA). We will first try out the LSI since this algorithms is faster than the others, although it has some drawbacks. From the agile data analysis perspective, we want at first to build the full analysis pipeline, getting some insights on performance, and, only then, improve the models. In any of the algorithms stated above, groups of features are formed to build a set of representative topics. Each document is then assigned a distance to that topic in a documents-topic matrix.</p>
+</li>
+<li>
+<p><strong>Classification</strong>: The third task is to build the classifier based on the topics extracted before. This classifier must be unsupervised: no inputs from a samples or user interaction are required for training it. Instead it shall find by itself the main patterns in the training data set, and infer from the internal structure of the corpus a classification scheme. We use the Self-Organizing Maps (SOM) algorithm invented by T. Kohonen. This unsupervised kind of neural networks algorithms builds a mapping from the input features space into a 2D map space (set of adjacent nodes). This mapping preserves the topology of input space, and is therefore very appealing for its potential regarding data visualization. Besides, the nodes are represented by vectors of same dimensionality than the input space, and are trained to be similar to the training dataset vectors they map to.</p>
+</li>
+<li>
+<p><strong>Clustering</strong>: This property of SOM is used in a fourth step for building clusters of nodes. We use an agglomerative clustering algorithm for finding a limited number of clusters of adjacent and similar nodes. The Ward algorithm is matching the two conditions of adjacency and similarity for grouping two nodes together. However, this step is not applied on the dataset, but on the output of the classification algorithm. Complementary to it, its goal is to improve the readability of results by humans.</p>
+</li>
+</ul>
+<h2>Structure of the master algorithm</h2>
+<p>In the introduction of this article we have mentioned the structure of the whole workflow. We basically define two abstract levels:</p>
+<ul>
+<li>The <code>Model</code> class assemble an algorithm that operates on some input data and producing an output. Information about the dimensionality of the input and output space are also provided. The model is a standardized interface between algorithms so that they can be easily chained. It also contains a <code>fit()</code> method that starts the training of the algorithms. Creating a model consists in creating a child class of the <code>Model</code> class which overrides the <code>fit()</code>method as well as the descriptive attributes. The class also has a method for streaming log messages, and other methods which are not displayed here:</li>
+</ul>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">model_name</span> <span class="o">=</span> <span class="s">&quot;sample_model&quot;</span>
+    <span class="n">output_data_name</span> <span class="o">=</span> <span class="s">&quot;output_data&quot;</span>
+    <span class="n">mapper_name</span> <span class="o">=</span> <span class="s">&quot;mapper_name&quot;</span>
+    <span class="n">model_type</span> <span class="o">=</span> <span class="s">&quot;model&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">fit_parameters</span><span class="p">,</span> <span class="n">output_space_size</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_data</span> <span class="o">=</span> <span class="n">input_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fit_parameters</span> <span class="o">=</span> <span class="n">fit_parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">training_set_size</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_space_size</span> <span class="o">=</span> <span class="n">output_space_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_attributes</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapper_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</pre></div>
+
+
+<ul>
+<li>The <code>Worklfow</code> class defines a master workflow that retrieves data from a source (SQL database or MongoDB store), applies to it a series of models and store the output of the classification in Mongo. In addition to that basic functionality this class must feature some helper methods for aggregating the data into Pandas <code>DataFrame</code> instances for cleaning, reformatting, indexing, grouping and querying it.</li>
+</ul>
+<p>The <code>SemanticAnalysisWorkflow</code> is a class with a MongoDB extractor.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SemanticAnalysisWorkflow</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">MONGO_DBNAME_OUT</span> <span class="o">=</span> <span class="s">&quot;textmining&quot;</span>
+    <span class="n">MONGO_COLLECTION_OUT</span> <span class="o">=</span> <span class="s">&quot;semantic&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">connection</span><span class="p">,</span> <span class="n">dbname</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vectorize_</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reduce_</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classify_</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cluster_</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_mongo</span><span class="p">(</span><span class="n">dbname</span><span class="p">,</span><span class="n">collection</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">read_mongo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dbname</span><span class="p">,</span> <span class="n">collection</span><span class="p">):</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="p">[</span><span class="n">dbname</span><span class="p">][</span><span class="n">collection</span><span class="p">]</span>
+        <span class="n">articles</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">projection</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;title&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;body&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span> <span class="s">&quot;_id&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">})</span>
+
+        <span class="n">json_articles</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">article</span> <span class="ow">in</span> <span class="n">articles</span><span class="p">:</span>
+            <span class="n">json_articles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">article</span><span class="p">)</span>
+        <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_articles</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">json_util</span><span class="o">.</span><span class="n">default</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corpus_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">corpus_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</pre></div>
+
+
+<p>In the following sections we will cover the details about the four tasks we have stated in the introduction, that is vectorization, semantic analysis, classification and clustering.</p>
+<h2>Vectorization</h2>
+<p>For vectorizing the corpus of articles we create a <code>Model</code> child class called <code>ModelTFIDF</code> which uses the TF-IDF vectorization algorithm from Scikit-Learn. If you are not familiar to the Scikit-Learn interfaces, you should consult the documentation relative to the <code>TfidfVectorizer</code>. This vectorizer</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">ModelTFIDF</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="n">model_type</span> <span class="o">=</span> <span class="s">&quot;transformer&quot;</span>
+    <span class="n">model_name</span> <span class="o">=</span> <span class="s">&quot;tfidf&quot;</span>
+    <span class="n">output_data_name</span> <span class="o">=</span> <span class="s">&quot;tfidfMatrix&quot;</span>
+    <span class="n">mapper_name</span> <span class="o">=</span> <span class="s">&quot;words_to_index&quot;</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_tokenizer</span><span class="p">(</span><span class="n">language</span><span class="p">)</span>
+        <span class="n">vectorizer</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">fit_parameters</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_space_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="c"># Give access to the index of a word</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapper_data</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">vocabulary_</span>
+
+        <span class="c"># Return a reverse mapper for retrieving a word from index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mapper_reverse</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_space_size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s">&quot;a30&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapper_data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mapper_reverse</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_model_results</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</pre></div>
+
+
+<p>For the <code>TfIdfVectorizer</code> from Scikit-Learn we use the following parameters:</p>
+<div class="highlight"><pre><span class="n">PARAMETERS_VECTORIZE</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;vocabulary&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+    <span class="s">&quot;max_df&quot;</span><span class="p">:</span> <span class="mf">0.6</span><span class="p">,</span>
+    <span class="s">&quot;min_df&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="s">&quot;ngram_range&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>  <span class="c"># unigrams or bigrams</span>
+    <span class="s">&quot;encoding&quot;</span><span class="p">:</span> <span class="s">&quot;utf-8&quot;</span><span class="p">,</span>
+    <span class="s">&quot;strip_accents&quot;</span><span class="p">:</span> <span class="s">&#39;ascii&#39;</span><span class="p">,</span>
+    <span class="s">&quot;norm&quot;</span><span class="p">:</span> <span class="s">&#39;l2&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<p>The TF-IDF vectorizer comprises two main building blocks: the tokenizer that extract the tokens from the text and the analyzer that counts the occurence frequencies. For the tokenizer, and especially when working with other languages than English, it is recommended to use the NLTK (Natural Language Toolkit). We will use a French tokenizer which also applies a stemming algorithm so that words like 'manger' and 'mangé' are not counted as different. Stemming can be highly beneficial in terms of computing time and also for the relevance of the results.</p>
+<p>In the following posts we will cover the three other building blocks of our workflow, and present our first results.</p>
+
+
+        
+    </div>
+        <!-- /Content --> 
+
+        <!-- Footer -->
+        <div class="footer gradient-2">
+            <div class="container footer-container ">
+                <div class="row">
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Sitemap</div>
+                        <ul class="list-unstyled">
+                            <li><a href="./archives.html">Archives</a></li>
+                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="./authors.html">Authors</a></li>
+                            <li><a href="http://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"></a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Social</div>
+                        <ul class="list-unstyled">
+                            <li><a href="https://github.com/fredhusser" target="_blank">GitHub</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
+                        <div class="footer-title">Links</div>
+                        <ul class="list-unstyled">
+                            <li><a href="#" target="_blank">Home</a></li>
+                        </ul>
+                    </div> 
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <p class="pull-right text-right">
+                            <small><em>Proudly powered by <a href="http://docs.getpelican.com/" target="_blank">pelican</a></em></small><br/>
+                            <small><em>Theme and code by <a href="https://github.com/molivier" target="_blank">molivier</a></em></small><br/>
+                            <small>&copy; blogname 2015</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Footer -->
+    </body>
+</html>
