@@ -5,16 +5,16 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Quick start with Scrapy We will work on our virtual machine as defined in the previous part. The code that we will go through is available in the GitHub repository under the worker_scrapy ...">
-        <meta name="keywords" content="MongoDB, Python, Scrapy">
-        <link rel="icon" href="https://fredhusser.github.io/favicon.ico">
+        <meta name="keywords" content="MongoDB, Python, Scrapy, Virtual environment">
+        <link rel="icon" href="./favicon.ico">
 
         <title>Part 2 - Crawling a news website in Python with Scrapy and MongoDB - Data Science for collective intelligence</title>
 
         <!-- Stylesheets -->
-        <link href="https://fredhusser.github.io/theme/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://fredhusser.github.io/theme/css/fonts.css" rel="stylesheet">
-        <link href="https://fredhusser.github.io/theme/css/nest.css" rel="stylesheet">
-        <link href="https://fredhusser.github.io/theme/css/pygment.css" rel="stylesheet">
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./theme/css/fonts.css" rel="stylesheet">
+        <link href="./theme/css/nest.css" rel="stylesheet">
+        <link href="./theme/css/pygment.css" rel="stylesheet">
         <!-- /Stylesheets -->
 
         <!-- RSS Feeds -->
@@ -41,11 +41,11 @@
             <div class="container">
                 <div class="header-nav">
                     <div class="header-logo">
-                        <a class="pull-left" href="https://fredhusser.github.io/">Data Science for collective intelligence</a>
+                        <a class="pull-left" href="./">Data Science for collective intelligence</a>
                     </div>
                     <div class="nav pull-right">
-                                <a href="https://fredhusser.github.io/">Homepage</a>
-                                <a href="https://fredhusser.github.io/categories.html">Categories</a>
+                                <a href="./">Homepage</a>
+                                <a href="./categories.html">Categories</a>
                     </div>
                 </div>
             </div>
@@ -58,12 +58,12 @@
               <div class="col-lg-12">
                   <div class="header-content">
                       <h1 class="header-title">Part 2 - Crawling a news website in Python with Scrapy and MongoDB</h1>
-                      <p class="header-date">By <a href="https://fredhusser.github.io/author/frederic-husser.html">Frederic Husser</a>, ven. 11 décembre 2015, in category <a href="https://fredhusser.github.io/category/python.html">Python</a></p>
+                      <p class="header-date">By <a href="./author/frederic-husser.html">Frederic Husser</a>, ven. 11 décembre 2015, in category <a href="./category/python.html">Python</a></p>
                       <div class="header-underline"></div>
                       <div class="clearfix"></div>
                       <p class="pull-right header-tags">
                           <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
-<a href="https://fredhusser.github.io/tag/mongodb.html">MongoDB</a>, <a href="https://fredhusser.github.io/tag/python.html">Python</a>, <a href="https://fredhusser.github.io/tag/scrapy.html">Scrapy</a>                      </p>
+<a href="./tag/mongodb.html">MongoDB</a>, <a href="./tag/python.html">Python</a>, <a href="./tag/scrapy.html">Scrapy</a>, <a href="./tag/virtual-environment.html">Virtual environment</a>                      </p>
                   </div>
               </div>
         </div>
@@ -78,7 +78,7 @@
         <!-- Content -->
     <div class="container content">
         <h2>Quick start with Scrapy</h2>
-<p>We will work on our virtual machine as defined in the previous part. The code that we will go through is available in the <a href="https://github.com/fredhusser/collective_intelligence">GitHub repository</a> under the worker_scrapy subdirectory. If the VM is not running just type <code>vagrant up</code> and then <code>vagrant ssh</code> while being at the root of the project.</p>
+<p>We will work on our virtual machine as defined in the previous part. The code that we will go through is available in the <a href="https://github.com/fredhusser/collective_intelligence">GitHub repository</a> under the worker_scrapy subdirectory. If the VM is not running just type <code>vagrant up</code> and then <code>vagrant ssh</code> while being at the root of the project. Consult this <a href="./development-environment.html">post</a> for learning how to create this VM using Vagrant.</p>
 <p>Since Scrapy will require some additional packages it is convenient to use a virtual python environment dedicated to our Scrapy worker. For doing this we will simply use the Conda package manager, and type in the terminal:</p>
 <div class="highlight"><pre><span class="nv">$ </span><span class="nb">cd</span> /vagrant/worker_scrapy
 <span class="nv">$ </span>sudo conda create -n scrapyenv -y scrapy pymongo
@@ -244,9 +244,9 @@ scrapy.cfg
                     <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
                         <div class="footer-title">Sitemap</div>
                         <ul class="list-unstyled">
-                            <li><a href="https://fredhusser.github.io/archives.html">Archives</a></li>
-                            <li><a href="https://fredhusser.github.io/tags.html">Tags</a></li>
-                            <li><a href="https://fredhusser.github.io/authors.html">Authors</a></li>
+                            <li><a href="./archives.html">Archives</a></li>
+                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="./authors.html">Authors</a></li>
                             <li><a href="https://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"></a></li>
                         </ul>
                     </div>

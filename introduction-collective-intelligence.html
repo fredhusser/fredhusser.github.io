@@ -6,15 +6,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="This blog is also meant to be a recipe for data scientists and physicists who want to be able to present and communicate about their work, so that their algorithms and analysis do not sleep ...">
         <meta name="keywords" content="Agile Data Science, dev environment, Machine Learning">
-        <link rel="icon" href="https://fredhusser.github.io/favicon.ico">
+        <link rel="icon" href="./favicon.ico">
 
-        <title>Part 0 - Collective intelligence in Python: introduction - Data Science for collective intelligence</title>
+        <title>Part 0 - Introduction to Programming Collective in Python - Data Science for collective intelligence</title>
 
         <!-- Stylesheets -->
-        <link href="https://fredhusser.github.io/theme/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://fredhusser.github.io/theme/css/fonts.css" rel="stylesheet">
-        <link href="https://fredhusser.github.io/theme/css/nest.css" rel="stylesheet">
-        <link href="https://fredhusser.github.io/theme/css/pygment.css" rel="stylesheet">
+        <link href="./theme/css/bootstrap.min.css" rel="stylesheet">
+        <link href="./theme/css/fonts.css" rel="stylesheet">
+        <link href="./theme/css/nest.css" rel="stylesheet">
+        <link href="./theme/css/pygment.css" rel="stylesheet">
         <!-- /Stylesheets -->
 
         <!-- RSS Feeds -->
@@ -41,11 +41,11 @@
             <div class="container">
                 <div class="header-nav">
                     <div class="header-logo">
-                        <a class="pull-left" href="https://fredhusser.github.io/">Data Science for collective intelligence</a>
+                        <a class="pull-left" href="./">Data Science for collective intelligence</a>
                     </div>
                     <div class="nav pull-right">
-                                <a href="https://fredhusser.github.io/">Homepage</a>
-                                <a href="https://fredhusser.github.io/categories.html">Categories</a>
+                                <a href="./">Homepage</a>
+                                <a href="./categories.html">Categories</a>
                     </div>
                 </div>
             </div>
@@ -57,13 +57,13 @@
         <div class="row">
               <div class="col-lg-12">
                   <div class="header-content">
-                      <h1 class="header-title">Part 0 - Collective intelligence in Python: introduction</h1>
-                      <p class="header-date">By <a href="https://fredhusser.github.io/author/frederic-husser.html">Frederic Husser</a>, mer. 09 décembre 2015, in category <a href="https://fredhusser.github.io/category/python.html">Python</a></p>
+                      <h1 class="header-title">Part 0 - Introduction to Programming Collective in Python</h1>
+                      <p class="header-date">By <a href="./author/frederic-husser.html">Frederic Husser</a>, mer. 09 décembre 2015, in category <a href="./category/python.html">Python</a></p>
                       <div class="header-underline"></div>
                       <div class="clearfix"></div>
                       <p class="pull-right header-tags">
                           <span class="glyphicon glyphicon-tags mr5" aria-hidden="true"></span>
-<a href="https://fredhusser.github.io/tag/agile-data-science.html">Agile Data Science</a>, <a href="https://fredhusser.github.io/tag/dev-environment.html">dev environment</a>, <a href="https://fredhusser.github.io/tag/machine-learning.html">Machine Learning</a>                      </p>
+<a href="./tag/agile-data-science.html">Agile Data Science</a>, <a href="./tag/dev-environment.html">dev environment</a>, <a href="./tag/machine-learning.html">Machine Learning</a>                      </p>
                   </div>
               </div>
         </div>
@@ -97,26 +97,26 @@
 <p>In the first iteration we will tackle the issue of semantic analysis for classifying documents based on their content. In order to achieve this goal we will operate in an agile manner so that we complete the following steps the fastest possible.</p>
 <ol>
 <li>
-<p><strong>Environment set-up</strong>
-We will set up a reproducible development environment, with all the basic tools and frameworks we are going to need. For this we will be using Vagrant for taking care of our virtual machine on which to run Python scripts and Docker containers.</p>
+<p><strong>Environment set-up</strong></p>
+<p>We will set up a reproducible development environment, with all the basic tools and frameworks we are going to need. For this we will be using Vagrant for taking care of our virtual machine on which to run Python scripts and Docker containers.</p>
 </li>
 <li>
-<p><strong>Data Collection</strong>
-Then some input data will be scraped from the web in order to have a collection of articles on which to perform some analysis. We will use Scrapy, a web scraper in made in Python, to help us crawling articles from <a href="http://www.lemonde.fr"><em>www.lemonde.fr</em></a>.</p>
+<p><strong>Data Collection</strong></p>
+<p>Then some input data will be scraped from the web in order to have a collection of articles on which to perform some analysis. We will use Scrapy, a web scraper in made in Python, to help us crawling articles from <a href="http://www.lemonde.fr"><em>www.lemonde.fr</em></a>.</p>
 </li>
 <li>
-<p><strong>Data analytics and text mining</strong>
-Here is the hard work! Standing on the shoulder of giants like Numpy, NLTK and Scikit-Learn, we will build a document classification algorithm based on semantic analysis and self-organizing maps. We will rely a lot on the existing algorithms for natural language processing (NLP) such as in Scikit-Learn and NLTK, and we will eventually build our own self-organizing map classifier in Python.</p>
+<p><strong>Data analytics and text mining</strong></p>
+<p>Here is the hard work! Standing on the shoulder of giants like Numpy, NLTK and Scikit-Learn, we will build a document classification algorithm based on semantic analysis and self-organizing maps. We will rely a lot on the existing algorithms for natural language processing (NLP) such as in Scikit-Learn and NLTK, and we will eventually build our own self-organizing map classifier in Python.</p>
 </li>
 <li>
-<p><strong>Data visualization and browsing</strong>
-Building a light weight web application with Flask and pymongo, we will make possible to data scientists to communicate on their results, with a step-by-step workflow.</p>
-</li>
-<li>
-<p>Present atomic records or chunks of the data; in our case it will be the news articles crawled from lemonde.fr. This step is really important to complete so that you can also evaluate the quality of your raw data. Keep the iteration based mindset.</p>
-</li>
+<p><strong>Data visualization and browsing</strong></p>
+<p>Building a light weight web application with Flask and pymongo, we will make possible to data scientists to communicate on their results, with a step-by-step workflow.</p>
+<ul>
+<li>Present atomic records or chunks of the data; in our case it will be the news articles crawled from lemonde.fr. This step is really important to complete so that you can also evaluate the quality of your raw data. Keep the iteration based mindset.</li>
 <li>Build data visualizations for presenting the results of your analysis, enabling the user to understand the full scope of it. We want also to make the data scientists able to evaluate the quality of the analysis they performed with an objective point of view.</li>
 <li>Create reports that convey a message understandable by your audience. These reports are based on the analysis you conducted. For instance, what are the hot topics, the most transversal articles or the most specific ones? The value of your analysis is derived from the insight on the data it can give and the actions that can be taken.</li>
+</ul>
+</li>
 </ol>
 
 
@@ -151,9 +151,9 @@ Building a light weight web application with Flask and pymongo, we will make pos
                     <div class="col-xs-4 col-sm-3 col-md-3 col-lg-3">
                         <div class="footer-title">Sitemap</div>
                         <ul class="list-unstyled">
-                            <li><a href="https://fredhusser.github.io/archives.html">Archives</a></li>
-                            <li><a href="https://fredhusser.github.io/tags.html">Tags</a></li>
-                            <li><a href="https://fredhusser.github.io/authors.html">Authors</a></li>
+                            <li><a href="./archives.html">Archives</a></li>
+                            <li><a href="./tags.html">Tags</a></li>
+                            <li><a href="./authors.html">Authors</a></li>
                             <li><a href="https://fredhusser.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate"></a></li>
                         </ul>
                     </div>
